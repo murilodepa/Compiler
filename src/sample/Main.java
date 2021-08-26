@@ -1,6 +1,6 @@
 package sample;
 
-import AnalisadorLexical.AnalisadorLexical;
+import analiseLexical.AnalisadorLexical;
 
 import java.io.IOException;
 

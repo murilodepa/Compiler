@@ -3,5 +3,5 @@ module Compiler {
     requires javafx.controls;
 
     opens sample;
-    opens AnalisadorLexical;
+    opens analiseLexical;
 }
