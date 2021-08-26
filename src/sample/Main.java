@@ -16,8 +16,8 @@ public class Main /* extends Application*/ {
 
 
     public static void main(String[] args) throws IOException {
-        AnalisadorLexical teste = new AnalisadorLexical();
-        teste.analisarArquivo("./eg.txt");
+        AnalisadorLexical teste = new AnalisadorLexical("./eg.txt");
+        teste.analisarArquivo();
         //launch(args);
     }
 }

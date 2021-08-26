@@ -10,6 +10,9 @@ public class Token {
         this.simbolo = simbolo;
     }
 
+    public Token() {
+    }
+
     public String getLexema() {
         return lexema;
     }
