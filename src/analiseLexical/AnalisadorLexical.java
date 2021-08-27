@@ -1,11 +1,10 @@
 package analiseLexical;
 
+import Utils.Caracteres;
 import Utils.Simbolos;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 
@@ -16,17 +15,13 @@ public class AnalisadorLexical {
     private int i;
 
     public AnalisadorLexical(String arquivo) throws IOException {
-
         tokens = new LinkedList<Token>();
         data = Files.readAllBytes(Paths.get(arquivo));
         i = 0;
     }
 
     public void analisarArquivo() throws Exception {
-        char caracter;
         while (i < data.length) {
-
-            String palavra = "";
             while (i < data.length && ((char) data[i] == '{' || Character.isSpace((char) data[i]))) {
 
                 //ignora comentário
@@ -62,13 +57,17 @@ public class AnalisadorLexical {
             trataDigito(caracter);
         } else if (Character.isAlphabetic(caracter) ) {
             trataIdentificadorEPalavraReservada(caracter);
-        } else if (caracter == ':') {
+        } else if (caracter == Caracteres.DOIS_PONTOS) {
             trataAtribuicao(caracter);
-        } else if (caracter == '+' || caracter == '-' || caracter == '*') {
+        } else if (caracter == Caracteres.MAIS || caracter == Caracteres.MENOS || caracter == Caracteres.ASTERISCO) {
             trataOperadorAritmetico(caracter);
-        } else if (caracter == '!' || caracter == '<' || caracter == '>' || caracter == '=') {
+        } else if (caracter == Caracteres.EXCLAMACAO || caracter == Caracteres.MENOR || caracter == Caracteres.MAIOR || caracter == Caracteres.IGUAL) {
             trataOperadorRelacional(caracter);
-        } else if (caracter == ';' || caracter == ',' || caracter == '(' || caracter == ')' || caracter == '.') {
+        } else if (caracter == Caracteres.PONTO_VIRGULA ||
+                   caracter == Caracteres.VIRGULA ||
+                   caracter == Caracteres.ABRE_PARENTESES ||
+                   caracter == Caracteres.FECHA_PARENTESES ||
+                   caracter == Caracteres.PONTO) {
             trataPontuacao(caracter);
         } else {
             throw new Exception(caracter+" é um caracter inválido");
@@ -94,8 +93,8 @@ public class AnalisadorLexical {
         String operador = "";
         operador += caracter;
         switch (caracter) {
-            case '!':
-                if (i < data.length - 1 && (char) data[i + 1] == '=') {
+            case Caracteres.EXCLAMACAO:
+                if (i < data.length - 1 && (char) data[i + 1] == Caracteres.IGUAL) {
                     i++;
                     operador += (char) data[i];
                     tokens.add(new Token(operador, Simbolos.DIFERENTE));
@@ -104,11 +103,11 @@ public class AnalisadorLexical {
                     //System.out.println((char) data[i]+" é um caracter inválido");
                 }
                 break;
-            case '=':
+            case Caracteres.IGUAL:
                 tokens.add(new Token(operador, Simbolos.IGUAL));
                 break;
-            case '<':
-                if (i < data.length - 1 && (char) data[i + 1] == '=') {
+            case Caracteres.MENOR:
+                if (i < data.length - 1 && (char) data[i + 1] == Caracteres.IGUAL) {
                     i++;
                     operador += (char) data[i];
                     tokens.add(new Token(operador, Simbolos.MENOR_IGUAL));
@@ -116,8 +115,8 @@ public class AnalisadorLexical {
                     tokens.add(new Token(operador, Simbolos.MENOR));
                 }
                 break;
-            case '>':
-                if (i < data.length - 1 && (char) data[i + 1] == '=') {
+            case Caracteres.MAIOR:
+                if (i < data.length - 1 && (char) data[i + 1] == Caracteres.IGUAL) {
                     i++;
                     operador += (char) data[i];
                     tokens.add(new Token(operador, Simbolos.MAIOR_IGUAL));
@@ -131,13 +130,13 @@ public class AnalisadorLexical {
 
     private void trataOperadorAritmetico(char caracter) {
         switch (caracter) {
-            case '*':
+            case Caracteres.ASTERISCO:
                 tokens.add(new Token(String.valueOf(caracter), Simbolos.MULTIPLICACAO));
                 break;
-            case '+':
+            case Caracteres.MAIS:
                 tokens.add(new Token(String.valueOf(caracter), Simbolos.MAIS));
                 break;
-            case '-':
+            case Caracteres.MENOS:
                 tokens.add(new Token(String.valueOf(caracter), Simbolos.MENOS));
                 break;
         }
@@ -224,7 +223,7 @@ public class AnalisadorLexical {
         String atribuicao = "";
         atribuicao += caracter;
 
-        if (i < data.length - 1 && (char) data[i + 1] == '=') {
+        if (i < data.length - 1 && (char) data[i + 1] == Caracteres.IGUAL) {
             i++;
             atribuicao += (char) data[i];
             tokens.add(new Token(atribuicao, Simbolos.ATRIBUICAO));
@@ -239,19 +238,19 @@ public class AnalisadorLexical {
         pontuacao += caracter;
 
         switch (caracter) {
-            case ';':
+            case Caracteres.PONTO_VIRGULA:
                 tokens.add(new Token(pontuacao, Simbolos.PONTO_VIRGULA));
                 break;
-            case ',':
+            case Caracteres.VIRGULA:
                 tokens.add(new Token(pontuacao, Simbolos.VIRGULA));
                 break;
-            case '(':
+            case Caracteres.ABRE_PARENTESES:
                 tokens.add(new Token(pontuacao, Simbolos.ABRE_PARENTESES));
                 break;
-            case ')':
+            case Caracteres.FECHA_PARENTESES:
                 tokens.add(new Token(pontuacao, Simbolos.FECHA_PARENTESES));
                 break;
-            case '.':
+            case Caracteres.PONTO:
                 tokens.add(new Token(pontuacao, Simbolos.PONTO));
                 break;
         }
