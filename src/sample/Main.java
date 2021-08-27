@@ -17,7 +17,11 @@ public class Main /* extends Application*/ {
 
     public static void main(String[] args) throws IOException {
         AnalisadorLexical teste = new AnalisadorLexical("./eg.txt");
-        teste.analisarArquivo();
+        try {
+            teste.analisarArquivo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //launch(args);
     }
 }

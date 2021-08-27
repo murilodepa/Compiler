@@ -22,7 +22,7 @@ public class AnalisadorLexical {
         i = 0;
     }
 
-    public void analisarArquivo() {
+    public void analisarArquivo() throws Exception {
         char caracter;
         while (i < data.length) {
 
@@ -55,7 +55,7 @@ public class AnalisadorLexical {
         }
     }
 
-    private void pegaToken() {
+    private void pegaToken() throws Exception {
 
         char caracter = (char) data[i];
         if (Character.isDigit((caracter))) {
@@ -71,7 +71,9 @@ public class AnalisadorLexical {
         } else if (caracter == ';' || caracter == ',' || caracter == '(' || caracter == ')' || caracter == '.') {
             trataPontuacao(caracter);
         } else {
-            System.out.println("\n Saiu sem entrar em nada");
+            throw new Exception(caracter+" é um caracter inválido");
+            //System.out.println(caracter+" é um caracter inválido");
+            //i++;
         }
     }
 
@@ -88,7 +90,7 @@ public class AnalisadorLexical {
         tokens.add(new Token(numero, Simbolos.NUMERO));
     }
 
-    private void trataOperadorRelacional(char caracter) {
+    private void trataOperadorRelacional(char caracter) throws Exception {
         String operador = "";
         operador += caracter;
         switch (caracter) {
@@ -97,6 +99,9 @@ public class AnalisadorLexical {
                     i++;
                     operador += (char) data[i];
                     tokens.add(new Token(operador, Simbolos.DIFERENTE));
+                } else{
+                    throw new Exception(caracter+" inválido");
+                    //System.out.println((char) data[i]+" é um caracter inválido");
                 }
                 break;
             case '=':
