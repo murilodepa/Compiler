@@ -11,51 +11,50 @@ import java.util.LinkedList;
 public class AnalisadorLexical {
 
     LinkedList<Token> tokens;
-    private byte[] data;
+    final private byte[] data;
     private int i;
 
     public AnalisadorLexical(String arquivo) throws IOException {
-        tokens = new LinkedList<Token>();
+        tokens = new LinkedList<>();
         data = Files.readAllBytes(Paths.get(arquivo));
         i = 0;
     }
 
     public void analisarArquivo() throws Exception {
         while (i < data.length) {
-            while (i < data.length && ((char) data[i] == '{' || Character.isSpace((char) data[i]))) {
+            while (i < data.length && ((char) data[i] == '{' || Character.isWhitespace((char) data[i]))) {
 
-                //ignora comentário
+                // Ignora os comentários
                 if ((char) data[i] == '{') {
-                    while (i < data.length -1 && (char) data[i] != '}') {
+                    while (i < data.length - 1 && (char) data[i] != '}') {
                         i++;
                     }
                     i++;
                 }
 
-                //ignora espaço em branco
-                while ( i < data.length && Character.isSpace((char) data[i])) {
+                // Ignora os espaços
+                while (i < data.length && Character.isWhitespace((char) data[i])) {
                     i++;
                 }
             }
 
             if (i < data.length) {
                 pegaToken();
+                i++;
             }
         }
 
-        for(int i=0;i<tokens.size();i++)
-        {
+        for (int i = 0; i < tokens.size(); i++) {
             System.out.println(tokens.get(i).getLexema());
             System.out.println(tokens.get(i).getSimbolo());
         }
     }
 
     private void pegaToken() throws Exception {
-
         char caracter = (char) data[i];
         if (Character.isDigit((caracter))) {
             trataDigito(caracter);
-        } else if (Character.isAlphabetic(caracter) ) {
+        } else if (Character.isAlphabetic(caracter)) {
             trataIdentificadorEPalavraReservada(caracter);
         } else if (caracter == Caracteres.DOIS_PONTOS) {
             trataAtribuicao(caracter);
@@ -64,29 +63,25 @@ public class AnalisadorLexical {
         } else if (caracter == Caracteres.EXCLAMACAO || caracter == Caracteres.MENOR || caracter == Caracteres.MAIOR || caracter == Caracteres.IGUAL) {
             trataOperadorRelacional(caracter);
         } else if (caracter == Caracteres.PONTO_VIRGULA ||
-                   caracter == Caracteres.VIRGULA ||
-                   caracter == Caracteres.ABRE_PARENTESES ||
-                   caracter == Caracteres.FECHA_PARENTESES ||
-                   caracter == Caracteres.PONTO) {
+                caracter == Caracteres.VIRGULA ||
+                caracter == Caracteres.ABRE_PARENTESES ||
+                caracter == Caracteres.FECHA_PARENTESES ||
+                caracter == Caracteres.PONTO) {
             trataPontuacao(caracter);
         } else {
-            throw new Exception(caracter+" é um caracter inválido");
-            //System.out.println(caracter+" é um caracter inválido");
-            //i++;
+            throw new Exception(caracter + " é um caracter inválido");
         }
     }
 
     private void trataDigito(char caracter) {
-        String numero = "";
-        numero += caracter;
-        i++;
+        StringBuilder numero = new StringBuilder();
+        numero.append(caracter);
 
-        while (i < data.length && Character.isDigit((char) data[i])) {
-            numero += (char) data[i];
+        while (i < data.length - 1 && Character.isDigit((char) data[i + 1])) {
             i++;
+            numero.append((char) data[i]);
         }
-
-        tokens.add(new Token(numero, Simbolos.NUMERO));
+        tokens.add(new Token(numero.toString(), Simbolos.NUMERO));
     }
 
     private void trataOperadorRelacional(char caracter) throws Exception {
@@ -98,8 +93,8 @@ public class AnalisadorLexical {
                     i++;
                     operador += (char) data[i];
                     tokens.add(new Token(operador, Simbolos.DIFERENTE));
-                } else{
-                    throw new Exception(caracter+" inválido");
+                } else {
+                    throw new Exception(caracter + " inválido");
                     //System.out.println((char) data[i]+" é um caracter inválido");
                 }
                 break;
@@ -125,7 +120,6 @@ public class AnalisadorLexical {
                 }
                 break;
         }
-        i++;
     }
 
     private void trataOperadorAritmetico(char caracter) {
@@ -140,82 +134,83 @@ public class AnalisadorLexical {
                 tokens.add(new Token(String.valueOf(caracter), Simbolos.MENOS));
                 break;
         }
-        i++;
     }
 
     private void trataIdentificadorEPalavraReservada(char caracter) {
-        String id = "";
-        id += caracter;
-        i++;
+        StringBuilder id = new StringBuilder();
+        id.append(caracter);
 
-        while (i < data.length && (Character.isAlphabetic((char) data[i]) || Character.isDigit((char) data[i]) || (char) data[i] == '_')) {
-            id += (char) data[i];
+        while (i < data.length - 1 && (Character.isAlphabetic((char) data[i + 1]) || Character.isDigit((char) data[i + 1]) || (char) data[i + 1] == '_')) {
             i++;
+            id.append((char) data[i]);
         }
 
-        switch (id) {
+        switch (id.toString()) {
             case "programa":
-                tokens.add(new Token(id, Simbolos.PROGRAMA));
+                tokens.add(new Token(id.toString(), Simbolos.PROGRAMA));
                 break;
             case "se":
-                tokens.add(new Token(id, Simbolos.SE));
+                tokens.add(new Token(id.toString(), Simbolos.SE));
                 break;
             case "entao":
-                tokens.add(new Token(id, Simbolos.ENTAO));
+                tokens.add(new Token(id.toString(), Simbolos.ENTAO));
                 break;
             case "senao":
-                tokens.add(new Token(id, Simbolos.SENAO));
+                tokens.add(new Token(id.toString(), Simbolos.SENAO));
                 break;
             case "enquanto":
-                tokens.add(new Token(id, Simbolos.ENQUANTO));
+                tokens.add(new Token(id.toString(), Simbolos.ENQUANTO));
                 break;
             case "faca":
-                tokens.add(new Token(id, Simbolos.FACA));
+                tokens.add(new Token(id.toString(), Simbolos.FACA));
                 break;
             case "inicio":
-                tokens.add(new Token(id, Simbolos.INICIO));
+                tokens.add(new Token(id.toString(), Simbolos.INICIO));
                 break;
             case "fim":
-                tokens.add(new Token(id, Simbolos.FIM));
+                tokens.add(new Token(id.toString(), Simbolos.FIM));
                 break;
             case "escreva":
-                tokens.add(new Token(id, Simbolos.ESCREVA));
+                tokens.add(new Token(id.toString(), Simbolos.ESCREVA));
                 break;
             case "leia":
-                tokens.add(new Token(id, Simbolos.LEIA));
+                tokens.add(new Token(id.toString(), Simbolos.LEIA));
                 break;
             case "var":
-                tokens.add(new Token(id, Simbolos.VAR));
+                tokens.add(new Token(id.toString(), Simbolos.VAR));
                 break;
             case "inteiro":
-                tokens.add(new Token(id, Simbolos.INTEIRO));
+                tokens.add(new Token(id.toString(), Simbolos.INTEIRO));
                 break;
             case "booleano":
-                tokens.add(new Token(id, Simbolos.BOOLEANO));
+                tokens.add(new Token(id.toString(), Simbolos.BOOLEANO));
                 break;
             case "verdadeiro":
-                tokens.add(new Token(id, Simbolos.VERDADEIRO));
+                tokens.add(new Token(id.toString(), Simbolos.VERDADEIRO));
                 break;
             case "falso":
-                tokens.add(new Token(id, Simbolos.FALSO));
+                tokens.add(new Token(id.toString(), Simbolos.FALSO));
+                break;
+            case "procedimento":
+                tokens.add(new Token(id.toString(), Simbolos.PROCEDIMENTO));
                 break;
             case "funcao":
-                tokens.add(new Token(id, Simbolos.FUNCAO));
+                tokens.add(new Token(id.toString(), Simbolos.FUNCAO));
                 break;
             case "div":
-                tokens.add(new Token(id, Simbolos.DIVISAO));
+                tokens.add(new Token(id.toString(), Simbolos.DIVISAO));
                 break;
             case "e":
-                tokens.add(new Token(id, Simbolos.E));
+                tokens.add(new Token(id.toString(), Simbolos.E));
                 break;
             case "ou":
-                tokens.add(new Token(id, Simbolos.OU));
+                tokens.add(new Token(id.toString(), Simbolos.OU));
                 break;
             case "nao":
-                tokens.add(new Token(id, Simbolos.NAO));
+                tokens.add(new Token(id.toString(), Simbolos.NAO));
                 break;
             default:
-                tokens.add(new Token(id, Simbolos.IDENTIFICADOR));
+                tokens.add(new Token(id.toString(), Simbolos.IDENTIFICADOR));
         }
     }
 
@@ -230,7 +225,6 @@ public class AnalisadorLexical {
         } else {
             tokens.add(new Token(atribuicao, Simbolos.DOIS_PONTOS));
         }
-        i++;
     }
 
     private void trataPontuacao(char caracter) {
@@ -254,6 +248,5 @@ public class AnalisadorLexical {
                 tokens.add(new Token(pontuacao, Simbolos.PONTO));
                 break;
         }
-        i++;
     }
 }

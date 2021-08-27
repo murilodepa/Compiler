@@ -2,15 +2,12 @@ package analiseLexical;
 
 public class Token {
 
-    private String lexema;
-    private String simbolo;
+    final private String lexema;
+    final private String simbolo;
 
     public Token(String lexema, String simbolo) {
         this.lexema = lexema;
         this.simbolo = simbolo;
-    }
-
-    public Token() {
     }
 
     public String getLexema() {
@@ -19,13 +16,5 @@ public class Token {
 
     public String getSimbolo() {
         return simbolo;
-    }
-
-    public void setLexema(String lexema) {
-        this.lexema = lexema;
-    }
-
-    public void setSimbolo(String simbolo) {
-        this.simbolo = simbolo;
     }
 }
