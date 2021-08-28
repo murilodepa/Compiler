@@ -4,6 +4,7 @@ import Utils.Caracteres;
 import Utils.Simbolos;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -16,9 +17,8 @@ public class Lexical {
 
     public Lexical(String caminhoDoArquivo) throws IOException {
         tokens = new LinkedList<>();
-        byte[] arq = Files.readAllBytes(Paths.get(caminhoDoArquivo));
-        String arqText = new String(arq, "UTF-8");
-        arquivo = arqText.toCharArray();
+        byte[] arquivoLido = Files.readAllBytes(Paths.get(caminhoDoArquivo));
+        arquivo = new String(arquivoLido, StandardCharsets.UTF_8).toCharArray();
         i = 0;
     }
 

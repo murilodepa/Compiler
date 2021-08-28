@@ -2,7 +2,7 @@ package analiseLexical;
 
 public class Token {
 
-    private String lexema;
+    private final String lexema;
     private String simbolo;
 
     public Token(String lexema) {
