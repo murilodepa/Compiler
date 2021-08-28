@@ -11,35 +11,37 @@ import java.util.LinkedList;
 public class Lexical {
 
     LinkedList<Token> tokens;
-    final private byte[] arquivo;
+    final private char[] arquivo;
     private int i;
 
     public Lexical(String caminhoDoArquivo) throws IOException {
         tokens = new LinkedList<>();
-        arquivo = Files.readAllBytes(Paths.get(caminhoDoArquivo));
+        byte[] arq = Files.readAllBytes(Paths.get(caminhoDoArquivo));
+        String arqText = new String(arq, "UTF-8");
+        arquivo = arqText.toCharArray();
         i = 0;
     }
 
     public void analisadorLexical() throws Exception {
         while (i < arquivo.length) {
-            while (i < arquivo.length && ((char) arquivo[i] == '{' || Character.isWhitespace((char) arquivo[i]))) {
+            while (i < arquivo.length && (arquivo[i] == Caracteres.ABRE_CHAVES || Character.isWhitespace(arquivo[i]))) {
 
                 // Ignora os comentários
-                if ((char) arquivo[i] == '{') {
-                    while (i < arquivo.length - 1 && (char) arquivo[i] != '}') {
+                if (arquivo[i] == Caracteres.ABRE_CHAVES) {
+                    while (i < arquivo.length - 1 && arquivo[i] != Caracteres.FECHA_CHAVES) {
                         i++;
                     }
                     i++;
                 }
 
                 // Ignora os espaços
-                while (i < arquivo.length && Character.isWhitespace((char) arquivo[i])) {
+                while (i < arquivo.length && Character.isWhitespace(arquivo[i])) {
                     i++;
                 }
             }
 
             if (i < arquivo.length) {
-                pegaToken((char) arquivo[i]);
+                pegaToken(arquivo[i]);
                 i++;
             }
         }
@@ -76,9 +78,9 @@ public class Lexical {
         StringBuilder numero = new StringBuilder();
         numero.append(caracter);
 
-        while (i < arquivo.length - 1 && Character.isDigit((char) arquivo[i + 1])) {
+        while (i < arquivo.length - 1 && Character.isDigit(arquivo[i + 1])) {
             i++;
-            numero.append((char) arquivo[i]);
+            numero.append(arquivo[i]);
         }
         tokens.add(new Token(numero.toString(), Simbolos.NUMERO));
     }
@@ -87,9 +89,9 @@ public class Lexical {
         StringBuilder id = new StringBuilder();
         id.append(caracter);
 
-        while (i < arquivo.length - 1 && (Character.isAlphabetic((char) arquivo[i + 1]) || Character.isDigit((char) arquivo[i + 1]) || (char) arquivo[i + 1] == '_')) {
+        while (i < arquivo.length - 1 && (Character.isAlphabetic(arquivo[i + 1]) || Character.isDigit(arquivo[i + 1]) || arquivo[i + 1] == Caracteres.UNDERLINE)) {
             i++;
-            id.append((char) arquivo[i]);
+            id.append(arquivo[i]);
         }
 
         Token token = new Token(id.toString());
@@ -168,9 +170,9 @@ public class Lexical {
         String atribuicao = "";
         atribuicao += caracter;
 
-        if (i < arquivo.length - 1 && (char) arquivo[i + 1] == Caracteres.IGUAL) {
+        if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
             i++;
-            atribuicao += (char) arquivo[i];
+            atribuicao += arquivo[i];
             tokens.add(new Token(atribuicao, Simbolos.ATRIBUICAO));
         } else {
             tokens.add(new Token(atribuicao, Simbolos.DOIS_PONTOS));
@@ -196,31 +198,30 @@ public class Lexical {
         operador += caracter;
         switch (caracter) {
             case Caracteres.EXCLAMACAO:
-                if (i < arquivo.length - 1 && (char) arquivo[i + 1] == Caracteres.IGUAL) {
+                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
                     i++;
-                    operador += (char) arquivo[i];
+                    operador += arquivo[i];
                     tokens.add(new Token(operador, Simbolos.DIFERENTE));
                 } else {
                     throw new Exception(caracter + " inválido");
-                    //System.out.println((char) data[i]+" é um caracter inválido");
                 }
                 break;
             case Caracteres.IGUAL:
                 tokens.add(new Token(operador, Simbolos.IGUAL));
                 break;
             case Caracteres.MENOR:
-                if (i < arquivo.length - 1 && (char) arquivo[i + 1] == Caracteres.IGUAL) {
+                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
                     i++;
-                    operador += (char) arquivo[i];
+                    operador += arquivo[i];
                     tokens.add(new Token(operador, Simbolos.MENOR_IGUAL));
                 } else {
                     tokens.add(new Token(operador, Simbolos.MENOR));
                 }
                 break;
             default:
-                if (i < arquivo.length - 1 && (char) arquivo[i + 1] == Caracteres.IGUAL) {
+                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
                     i++;
-                    operador += (char) arquivo[i];
+                    operador += arquivo[i];
                     tokens.add(new Token(operador, Simbolos.MAIOR_IGUAL));
                 } else {
                     tokens.add(new Token(operador, Simbolos.MAIOR));
