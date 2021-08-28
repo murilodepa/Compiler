@@ -42,5 +42,3 @@ public class Simbolos {
     public static final String FALSO = "Sfalso";
     public static final String VERDADEIRO = "Sverdadeiro";
 }
-
-

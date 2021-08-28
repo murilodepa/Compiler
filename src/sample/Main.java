@@ -1,27 +1,34 @@
 package sample;
 
-import analiseLexical.AnalisadorLexical;
+import analiseLexical.Lexical;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
-public class Main /* extends Application*/ {
+public class Main /* extends Application */ {
 /*
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
-    }*/
-
+    }
+*/
 
     public static void main(String[] args) throws IOException {
-        AnalisadorLexical teste = new AnalisadorLexical("./eg.txt");
+        Lexical lexical = new Lexical("./eg.txt");
         try {
-            teste.analisarArquivo();
+            lexical.analisadorLexical();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //launch(args);
+
+        // launch(args);
     }
 }
