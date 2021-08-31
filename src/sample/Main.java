@@ -1,6 +1,7 @@
 package sample;
 
 import analiseLexical.Lexical;
+import analiseLexical.Token;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class Main /* extends Application */ {
@@ -22,9 +24,17 @@ public class Main /* extends Application */ {
 */
 
     public static void main(String[] args) throws IOException {
-        Lexical lexical = new Lexical("./eg.txt");
+        LinkedList<Token> tokens;
+        Lexical lexical = new Lexical("./exemplo.txt");
+
         try {
             lexical.analisadorLexical();
+            tokens = lexical.getTokens();
+
+            for (Token token : tokens) {
+                System.out.println(token.getLexema());
+                System.out.println(token.getSimbolo());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

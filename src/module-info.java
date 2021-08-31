@@ -6,4 +6,5 @@ module Compiler {
     opens sample;
     opens analiseLexical;
     opens Utils;
+    opens analiseSintatica;
 }

@@ -45,11 +45,6 @@ public class Lexical {
                 i++;
             }
         }
-
-        for (Token token : tokens) {
-            System.out.println(token.getLexema());
-            System.out.println(token.getSimbolo());
-        }
     }
 
     private void pegaToken(char caracter) throws Exception {
@@ -251,5 +246,9 @@ public class Lexical {
                 tokens.add(new Token(pontuacao, Simbolos.PONTO));
                 break;
         }
+    }
+
+    public LinkedList<Token> getTokens() {
+        return tokens;
     }
 }
