@@ -17,30 +17,49 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 
 public class Lexical {
-
     LinkedList<Token> tokens;
     final private char[] arquivo;
     private int i;
+    private int linha;
+    private int coluna;
 
     public Lexical(String caminhoDoArquivo) throws IOException {
         tokens = new LinkedList<>();
         byte[] arquivoLido = Files.readAllBytes(Paths.get(caminhoDoArquivo));
         arquivo = new String(arquivoLido, StandardCharsets.UTF_8).toCharArray();
         i = 0;
+        linha=1;
+        coluna=0;
+    }
+
+    public void verificarLinha()
+    {
+        if(arquivo[i]=='\n')
+        {
+            linha++;
+            coluna=i;
+        }
     }
 
     public void analisadorLexical() throws Exception {
         while (i < arquivo.length) {
             while (i < arquivo.length && (arquivo[i] == Caracteres.ABRE_CHAVES || Character.isWhitespace(arquivo[i]))) {
                 // Ignora os comentários
+
                 if (arquivo[i] == Caracteres.ABRE_CHAVES) {
                     while (i < arquivo.length - 1 && arquivo[i] != Caracteres.FECHA_CHAVES) {
+                       verificarLinha();
                         i++;
+                    }
+                    if(arquivo[i]!= Caracteres.FECHA_CHAVES)
+                    {
+                        throw new Exception("faltando }");
                     }
                     i++;
                 }
                 // Ignora os espaços
                 while (i < arquivo.length && Character.isWhitespace(arquivo[i])) {
+                    verificarLinha();
                     i++;
                 }
             }
@@ -69,7 +88,7 @@ public class Lexical {
                 caracter == Caracteres.PONTO) {
             trataPontuacao(caracter);
         } else {
-            throw new Exception("ERRO! O '" + caracter + "' é um caracter inválido!");
+            throw new Exception("ERRO! Linha:"+linha+" Coluna:"+(i-coluna)+" "+ caracter + " é um caracter inválido!");
         }
     }
 
@@ -131,7 +150,7 @@ public class Lexical {
                     break;
                 } else {
                     operador += arquivo[i + 1];
-                    throw new Exception("ERRO! O '" + operador + "' é um operador inválido!");
+                    throw new Exception("ERRO! Linha:"+linha+" Coluna:"+(i-coluna)+" " + operador + "' é um operador inválido!");
                 }
             case Caracteres.IGUAL:
                 tokens.add(new Token(operador, Operadores.IGUAL));
