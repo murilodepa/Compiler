@@ -1,5 +1,6 @@
 # Compiler
-Final project of the "Building Compilers" course.
+
+## Final project of the "Building Compilers" course.
 
 ### Developers 
 * Cesar Marrote Manzano
