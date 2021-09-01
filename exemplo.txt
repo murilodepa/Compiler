@@ -1,45 +1,36 @@
-procedimento p4;
-var i:inteiro;
+{Teste numero com ponto}
+programa test1;
+
+var a,b,c: inteiro;
+
+{proc 1}
+procedimento analisa1;
+var a, x: inteiro;
+       z: booleano;
 inicio
-	i:=0;
-	val:=i;
-	escreva(val);
-	p1;
-	escreva(val)
+  se x>1  entao
+      x:= 0;
+  leia(z);
+  enquanto (a <> 89) e (a<= 100.0)  {condicao de parada}
+  faca inicio
+           a:= x+z
+       fim;
+  escreva(a)
+fim;
+
+
+procedimento analisa2;
+inicio
+  leia(a);
+  b:= a*a+(c div b) 
 fim;
 
 inicio
-   i:=0;
-   enquanto i < 3 faca
-   inicio
-      leia(n); {leitura do valor
-
-
-
-		para o qual se quer
-
-
-
-		calcular o fatorial
-    } i:= i+1;
-      j:=fat;
-
-      escreva(j);
-   fim
-
-   {agora comeca a chamada dos proce
-			dimentos
-							};
-
-   p4; {que vai chamar p1
-	que vai chamar p2
-	que vai chamar p3
-	que vai chamar p1
-	que vai chamar p2
-	que vai chamar p3
-	que vai chamar p1
-	que vai chamar p2
-	que vai chamar p3
-	que vai chamar p1}
-
+    analisa1;
+    analisa2;
+    se b > (c+ a*a)
+    entao escreva(b)
+    senao escreva(c)
 fim.
+
+{fim} 
