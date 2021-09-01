@@ -1,5 +1,6 @@
 package sample;
 
+import analiseLexical.IDs;
 import analiseLexical.Lexical;
 import analiseLexical.Token;
 import javafx.application.Application;
@@ -32,13 +33,12 @@ public class Main /* extends Application */ {
             tokens = lexical.getTokens();
 
             for (Token token : tokens) {
-                System.out.println(token.getLexema());
+                System.out.print(token.getLexema() + " -> ");
                 System.out.println(token.getSimbolo());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // launch(args);
     }
 }

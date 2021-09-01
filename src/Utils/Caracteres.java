@@ -16,5 +16,5 @@ public class Caracteres {
     public static final char FECHA_PARENTESES = ')';
     public static final char ABRE_CHAVES = '{';
     public static final char FECHA_CHAVES = '}';
-    public static final char UNDERLINE =  '_';
+    public static final char UNDERLINE = '_';
 }
