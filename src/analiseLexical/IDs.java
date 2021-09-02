@@ -51,7 +51,7 @@ public enum IDs {
         return lexema;
     }
 
-    public static String pegaSimboloPorLexama(String lexama) {
+    public static String pegaSimboloDoId (String lexama) {
         return simboloPorLexema.getOrDefault(lexama, Sidentificador).toString();
     }
 }

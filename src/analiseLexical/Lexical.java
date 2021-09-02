@@ -28,16 +28,14 @@ public class Lexical {
         byte[] arquivoLido = Files.readAllBytes(Paths.get(caminhoDoArquivo));
         arquivo = new String(arquivoLido, StandardCharsets.UTF_8).toCharArray();
         i = 0;
-        linha=1;
-        coluna=0;
+        linha = 1;
+        coluna = 0;
     }
 
-    public void verificarLinha()
-    {
-        if(arquivo[i]=='\n')
-        {
+    public void verificarLinha() {
+        if (arquivo[i] == '\n') {
             linha++;
-            coluna=i;
+            coluna = i;
         }
     }
 
@@ -48,12 +46,11 @@ public class Lexical {
 
                 if (arquivo[i] == Caracteres.ABRE_CHAVES) {
                     while (i < arquivo.length - 1 && arquivo[i] != Caracteres.FECHA_CHAVES) {
-                       verificarLinha();
+                        verificarLinha();
                         i++;
                     }
-                    if(arquivo[i]!= Caracteres.FECHA_CHAVES)
-                    {
-                        throw new Exception("faltando }");
+                    if (arquivo[i] != Caracteres.FECHA_CHAVES) {
+                        throw new Exception("Está faltando o caracter: '}'");
                     }
                     i++;
                 }
@@ -88,7 +85,7 @@ public class Lexical {
                 caracter == Caracteres.PONTO) {
             trataPontuacao(caracter);
         } else {
-            throw new Exception("ERRO! Linha:"+linha+" Coluna:"+(i-coluna)+" "+ caracter + " é um caracter inválido!");
+            throw new Exception("ERRO! Linha: " + linha + " e Coluna: " + (i - coluna) + ". O '" + caracter + "' é um caracter inválido!");
         }
     }
 
@@ -109,7 +106,7 @@ public class Lexical {
             i++;
             id.append(arquivo[i]);
         }
-        tokens.add(new Token(id.toString(), IDs.pegaSimboloPorLexama(id.toString())));
+        tokens.add(new Token(id.toString(), IDs.pegaSimboloDoId(id.toString())));
     }
 
     private void trataAtribuicao(char caracter) {
@@ -141,45 +138,24 @@ public class Lexical {
     private void trataOperadorRelacional(char caracter) throws Exception {
         String operador = "";
         operador += caracter;
-        switch (caracter) {
-            case Caracteres.EXCLAMACAO:
-                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
-                    i++;
-                    operador += arquivo[i];
-                    tokens.add(new Token(operador, Operadores.DIFERENTE));
-                    break;
-                } else {
-                    operador += arquivo[i + 1];
-                    throw new Exception("ERRO! Linha:"+linha+" Coluna:"+(i-coluna)+" " + operador + "' é um operador inválido!");
-                }
-            case Caracteres.IGUAL:
-                tokens.add(new Token(operador, Operadores.IGUAL));
-                break;
-            case Caracteres.MENOR:
-                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
-                    i++;
-                    operador += arquivo[i];
-                    tokens.add(new Token(operador, Operadores.MENOR_IGUAL));
-                } else {
-                    tokens.add(new Token(operador, Operadores.MENOR));
-                }
-                break;
-            default:
-                if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
-                    i++;
-                    operador += arquivo[i];
-                    tokens.add(new Token(operador, Operadores.MAIOR_IGUAL));
-                } else {
-                    tokens.add(new Token(operador, Operadores.MAIOR));
-                }
-                break;
+
+        if (i < arquivo.length - 1 && arquivo[i + 1] == Caracteres.IGUAL) {
+            i++;
+            operador += arquivo[i];
+            tokens.add(new Token(operador, OperadoresRelacional.pegaSimboloDoOperador(operador)));
+        } else {
+            if (caracter != Caracteres.EXCLAMACAO) {
+                tokens.add(new Token(operador, OperadoresRelacional.pegaSimboloDoOperador(operador)));
+            } else {
+                throw new Exception("ERRO! Linha: " + linha + " e Coluna: " + (i - coluna) + ". O '" + operador + "' é um operador inválido!");
+            }
         }
     }
 
     private void trataPontuacao(char caracter) {
         String pontuacao = "";
         pontuacao += caracter;
-        tokens.add(new Token(pontuacao, Pontuacoes.pegaSimboloPorLexama(pontuacao)));
+        tokens.add(new Token(pontuacao, Pontuacoes.pegaSimboloDaPontuacao(pontuacao)));
     }
 
     public LinkedList<Token> getTokens() {

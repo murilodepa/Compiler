@@ -36,7 +36,7 @@ public enum Pontuacoes {
         return lexema;
     }
 
-    public static String pegaSimboloPorLexama(String lexema) {
+    public static String pegaSimboloDaPontuacao(String lexema) {
         return pontuacaoPorLexema.get(lexema).toString();
     }
 }
