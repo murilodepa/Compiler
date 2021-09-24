@@ -15,7 +15,7 @@ public enum Pontuacoes {
     sponto_virgula(";"),
     Svirgula(","),
     sabre_parenteses("("),
-    sfecha_parentes(")"),
+    sfecha_parenteses(")"),
     Sponto(".");
 
     final private String lexema;

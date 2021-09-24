@@ -16,7 +16,6 @@ public class TabelaDeSimbolos {
 
     Stack<Simbolo> pilha;
 
-
     public TabelaDeSimbolos() {
         pilha = new Stack<Simbolo>();
     }
@@ -34,7 +33,7 @@ public class TabelaDeSimbolos {
         }
     }
 
-    private void insereNaTabela(char identificador) {
+    private void insereTabela(char identificador) {
 
     }
 

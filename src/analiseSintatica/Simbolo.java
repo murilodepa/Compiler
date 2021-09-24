@@ -20,4 +20,36 @@ public class Simbolo {
         this.tipo = tipo;
         this.memoria = memoria;
     }
+
+    public String getLexema() {
+        return lexema;
+    }
+
+    public int getEscopo() {
+        return escopo;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public String getMemoria() {
+        return memoria;
+    }
+
+    public void setLexema(String lexema) {
+        this.lexema = lexema;
+    }
+
+    public void setEscopo(int escopo) {
+        this.escopo = escopo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setMemoria(String memoria) {
+        this.memoria = memoria;
+    }
 }

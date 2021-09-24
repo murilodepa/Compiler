@@ -10,6 +10,7 @@ package sample;
 import analiseLexical.IDs;
 import analiseLexical.Lexical;
 import analiseLexical.Token;
+import analiseSintatica.Sintatico;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,18 +34,10 @@ public class Main /* extends Application */ {
 
     public static void main(String[] args) throws IOException {
         LinkedList<Token> tokens;
-        Lexical lexical = new Lexical("./testes/teste_6.txt");
+        Sintatico sintatico = new Sintatico("./exemplo.txt");
 
-        try {
-            lexical.analisadorLexical();
-            tokens = lexical.getTokens();
-            for (Token token : tokens) {
-                System.out.print(token.getLexema() + " -> ");
-                System.out.println(token.getSimbolo());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         // launch(args);
     }
+
+
 }
