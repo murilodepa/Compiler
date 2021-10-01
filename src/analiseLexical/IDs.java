@@ -13,6 +13,7 @@ import java.util.Map;
 public enum IDs {
     sprograma("programa"),
     sse("se"),
+    sentao("entao"),
     ssenao("senao"),
     senquanto("enquanto"),
     sfaca("faca"),

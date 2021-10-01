@@ -7,45 +7,67 @@
 
 package analiseSintatica;
 
+import analiseLexical.IDs;
+import analiseLexical.Pontuacoes;
 import analiseLexical.Token;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class TabelaDeSimbolos {
 
-    Stack<Simbolo> pilha;
+    ArrayList<Simbolo> tabela;
 
     public TabelaDeSimbolos() {
-        pilha = new Stack<Simbolo>();
+        tabela = new ArrayList<Simbolo>();
     }
 
+    /* Analisa escopos das variáveis */
     public void analisarListaDeTokens(LinkedList<Token> tokens) {
         int i = 0;
 
         for (Token token : tokens) {
-            if (token.getLexema() == "procedimento") {
+            if (token.getSimbolo().equals(IDs.Sidentificador.toString())) {
+
+
 
             }
-            if (token.getSimbolo() == "sprocedimento") {
+/* Verificar escopo */
+//            programa - sprograma
+//            início - sinicio
+//            procedimento - sprocedimento
+//            funcao - sfuncao
+//            se - sse
+//            entao - sentao
+//            senao - ssenao
+//            enquanto - senquanto
+
+/* Verificar identificadores */
+/*
+            var - svar
+            inteiro - sinteiro
+            booleano - Sbooleano
+            identificador - Sidentificador
+            número - Snumero
+*/
+
+            if (token.getSimbolo().equals(IDs.Sidentificador.toString()) || token.getSimbolo().equals(IDs.Sidentificador.toString())) {
 
             }
         }
     }
 
-    private void insereTabela(char identificador) {
-
+    public void insereTabela(String lexema, int escopo, String tipo, String memoria) {
+        tabela.add(new Simbolo(lexema, escopo, tipo, memoria));
     }
 
-    private boolean consultaNaTabela(char identificador, LinkedList<Token> tokens) {
-        if (tokens.contains(identificador)) {
-            return true;
-        }
-
-        return false;
+    public Simbolo consultaNaTabela(String lexema) {
+        return tabela.get(tabela.indexOf(lexema));
     }
 
-    private void colocaTipoNasVariaveis() {
+    public void colocaTipoNasVariaveis() {
 
     }
 }

@@ -17,10 +17,11 @@ public class Sintatico {
     LinkedList<Token> tokens;
     public int rotulo;
     private int i = 0;
+    private TabelaDeSimbolos tabelaDeSimbolos;
 
     public Sintatico(String caminhoDoArquivo) throws IOException {
         Lexical lexical = new Lexical(caminhoDoArquivo);
-
+        tabelaDeSimbolos = new TabelaDeSimbolos();
         try {
             lexical.analisadorLexical();
             tokens = lexical.getTokens();
@@ -41,7 +42,7 @@ public class Sintatico {
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                //insereTabela()
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), -1, "", "");
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                     i++;
@@ -95,7 +96,7 @@ public class Sintatico {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 if (!pesquisaDuplicadoVarTabela()) {
-                    //insereTabela(tokens.get(i).getLexema(), tokens.get(i).getSimbolo());
+                    //insereTabela(tokens.get(i).getLexema());
                     i++;
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString()) || tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
                         if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString())) {
@@ -134,6 +135,39 @@ public class Sintatico {
     }
 
     public void analisaSubrotinas() {
+        //int auxRot, flag;
+        //flag = 0;
+        if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
+            /*
+             * auxRot = rotulo
+             * gera()
+             * rotulo ++
+             * flag = 1
+             * */
+        }
+
+        while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString() || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString()) {
+            if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString())){
+                analisaDeclaracaoProcedimento();
+            }else{
+                analisaDeclaracaoFuncao();
+            }
+
+            if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
+                i++;
+            }
+        }
+
+        /*if(flag == 1){
+            gera()
+        }*/
+    }
+
+    private void analisaDeclaracaoProcedimento() {
+
+    }
+
+    private void analisaDeclaracaoFuncao() {
 
     }
 
@@ -187,7 +221,7 @@ public class Sintatico {
     private void analisaSe() {
         i++;
         analisaExpressao();
-        if (tokens.get(i).getSimbolo().equals("sentao")) {
+        if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
             i++;
             analisaComandoSimples();
         }
@@ -340,4 +374,13 @@ GERA
             analisaFator();
         }
     }
+
+    private void analisaChamadaProcedimento(){
+
+    }
+
+    private void analisaChamadaFuncao(){
+
+    }
+
 }
