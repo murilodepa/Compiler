@@ -10,18 +10,17 @@ package analiseSintatica;
 import Utils.Operadores;
 import analiseLexical.*;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
 public class Sintatico {
     LinkedList<Token> tokens;
-    public int rotulo;
+   // public int rotulo;
     private int i = 0;
-    private TabelaDeSimbolos tabelaDeSimbolos;
+    //private TabelaDeSimbolos tabelaDeSimbolos;
 
-    public Sintatico(String caminhoDoArquivo) throws IOException {
+    public Sintatico(String caminhoDoArquivo) throws Exception {
         Lexical lexical = new Lexical(caminhoDoArquivo);
-        tabelaDeSimbolos = new TabelaDeSimbolos();
+        //tabelaDeSimbolos = new TabelaDeSimbolos();
         try {
             lexical.analisadorLexical();
             tokens = lexical.getTokens();
@@ -36,45 +35,43 @@ public class Sintatico {
         analisadorSintatico();
     }
 
-    public void analisadorSintatico() {
-        rotulo = 1;
-
+    public void analisadorSintatico() throws Exception {
+       // rotulo = 1;
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), -1, "", "");
+                //tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), -1, "", "");
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
-                    i++;
-                    // analisaBloco();
+                     analisaBloco();
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Sponto.toString())) {
-                        i++;
-                        if (i == tokens.size()) {
+                        if (i == tokens.size()-1) {
                             System.out.println("SUCESSO!");
                         } else {
-                            System.out.println("ERROU!");
+                            throw new Exception("ERRO! - Ultrapassou o tamanho contido na lista!");
                         }
                     } else {
-                        System.out.println("ERROU!");
+                        throw new Exception("ERRO! - Esperado um ponto '.'!");
                     }
                 } else {
-                    System.out.println("ERROU!");
+                    throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
                 }
             } else {
-                System.out.println("ERROU!");
+                throw new Exception("ERRO! - Esperado um identificador!");
             }
         } else {
-            System.out.println("ERROU!");
+            throw new Exception("ERRO! - Esperado um programa!");
         }
     }
 
-    public void analisaBloco() {
+    public void analisaBloco() throws Exception {
+        i++;
         analisaEtVariaveis();
         analisaSubrotinas();
         analisaComandos();
     }
 
-    public void analisaEtVariaveis() {
+    public void analisaEtVariaveis() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.svar.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
@@ -83,36 +80,37 @@ public class Sintatico {
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                         i++;
                     } else {
-                        System.out.println("ERROU!");
+                        throw new Exception("ERRO! - Esperado um ponto e virgula ';'!");
                     }
                 }
             } else {
-                System.out.println("ERROU!");
+                throw new Exception("ERRO! - Esperado um identificador!");
             }
         }
     }
 
-    public void analisaVariaveis() {
+    public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (!pesquisaDuplicadoVarTabela()) {
+             //   if (!pesquisaDuplicadoVarTabela()) {
                     //insereTabela(tokens.get(i).getLexema());
                     i++;
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString()) || tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
                         if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString())) {
                             i++;
                             if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
-                                System.out.println("ERROU!");
+                                //throw new Exception("ERRO! - Não é esperado dois pontos ':'!");
+                                throw new Exception("ERRO! - Para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por dois pontos ':'!");
                             }
                         }
                     } else {
-                        System.out.println("ERROU!");
+                        throw new Exception("ERRO! - Esperado uma vírgula ',' ou dois pontos ':'!");
                     }
-                } else {
-                    System.out.println("ERROU!");
-                }
+             //   } else {
+             //       System.out.println("analisaVariaveis - ERRO na inserção da tabela - ");
+            //    }
             } else {
-                System.out.println("ERROU!");
+                throw new Exception("ERRO! - Esperado um identificador!");
             }
 
         } while (!tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS));
@@ -120,23 +118,23 @@ public class Sintatico {
         analisaTipo();
     }
 
-    public boolean pesquisaDuplicadoVarTabela() {
+/*    public boolean pesquisaDuplicadoVarTabela() {
         return true;
     }
-
-    public void analisaTipo() {
-        String simboloAtual = tokens.get(i).getSimbolo();
-        if (!simboloAtual.equals(IDs.sinteiro.toString()) && !simboloAtual.equals(IDs.Sbooleano.toString())) {
-            System.out.println("ERROU");
+*/
+    public void analisaTipo() throws Exception {
+        if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
+            throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
         } else {
-            // colocaTipoTabela(tokens.get(i).getLexema());
+            //colocaTipoTabela(tokens.get(i).getLexema());
         }
         i++;
     }
 
-    public void analisaSubrotinas() {
-        //int auxRot, flag;
-        //flag = 0;
+    public void analisaSubrotinas() throws Exception {
+        //int auxRot;
+        int flag;
+        flag = 0;
         if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             /*
              * auxRot = rotulo
@@ -146,7 +144,7 @@ public class Sintatico {
              * */
         }
 
-        while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString() || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString()) {
+        while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString())){
                 analisaDeclaracaoProcedimento();
             }else{
@@ -155,6 +153,8 @@ public class Sintatico {
 
             if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                 i++;
+            } else {
+                throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
             }
         }
 
@@ -163,15 +163,47 @@ public class Sintatico {
         }*/
     }
 
-    private void analisaDeclaracaoProcedimento() {
-
+    private void analisaDeclaracaoProcedimento() throws Exception {
+        i++;
+        if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
+            // pesquisaDeclaracaoProcedimentoTabela(tokens.lexema)
+            // insereTabela()
+            // Se não encontrou
+            i++;
+            if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
+                analisaBloco();
+            } else {
+                throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
+            }
+        } else {
+            throw new Exception("ERRO! - Esperado um identificador!");
+        }
+        // Demsempilha ou Volta Nível
     }
 
-    private void analisaDeclaracaoFuncao() {
-
+    private void analisaDeclaracaoFuncao() throws Exception {
+        i++;
+        if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
+            i++;
+            if(tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS.toString())){
+                i++;
+                if(tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())){
+                    i++;
+                    if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())){
+                        analisaBloco();
+                    }
+                } else {
+                    throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
+                }
+            } else {
+                throw new Exception("ERRO! - Esperado um dois pontos ';'!");
+            }
+        } else {
+            throw new Exception("ERRO! - Esperado um identificador!");
+        }
     }
 
-    public void analisaComandos() {
+    public void analisaComandos() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.sinicio.toString())) {
             i++;
             analisaComandoSimples();
@@ -182,147 +214,153 @@ public class Sintatico {
                         analisaComandoSimples();
                     }
                 } else {
-                    System.out.println("ERROU");
+                    throw new Exception("ERRO! - Esperado um ponto e vírgula!");
                 }
             }
             i++;
         } else {
-            System.out.println("ERROU");
+            throw new Exception("ERRO! - Esperado um inicio no no lugar do simbolo: " + tokens.get(i).getSimbolo());
         }
     }
 
-    public void analisaComandoSimples() {
-
-        String simboloAtual = tokens.get(i).getSimbolo();
-        if (simboloAtual.equals(IDs.Sidentificador.toString())) {
+    public void analisaComandoSimples() throws Exception {
+        if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
             analisaAtribuicaoChamadaProcedimento();
-        } else if (simboloAtual.equals(IDs.sse.toString())) {
+        } else if (tokens.get(i).getSimbolo().equals(IDs.sse.toString())) {
             analisaSe();
-        } else if (simboloAtual.equals(IDs.senquanto.toString())) {
+        } else if (tokens.get(i).getSimbolo().equals(IDs.senquanto.toString())) {
             analisaEnquanto();
-        } else if (simboloAtual.equals(IDs.sleia.toString())) {
+        } else if (tokens.get(i).getSimbolo().equals(IDs.sleia.toString())) {
             analisaLeia();
-        } else if (simboloAtual.equals(IDs.sescreva.toString())) {
+        } else if (tokens.get(i).getSimbolo().equals(IDs.sescreva.toString())) {
             analisaEscreva();
         } else {
             analisaComandos();
         }
     }
 
-    private void analisaAtribuicaoChamadaProcedimento() {
+    private void analisaAtribuicaoChamadaProcedimento() throws Exception {
         i++;
         if (tokens.get(i).getSimbolo().equals(Operadores.ATRIBUICAO)) {
+            i++;
+            analisaExpressao();
             //analisaAtribuicao();
         } else {
+            //i++;
             //chamadaProcedimento();
         }
     }
 
-    private void analisaSe() {
+    private void analisaSe() throws Exception {
         i++;
         analisaExpressao();
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
             i++;
             analisaComandoSimples();
+            if (tokens.get(i).getSimbolo().equals(IDs.ssenao.toString())) {
+                i++;
+                analisaComandoSimples();
+            }
+        } else {
+            throw new Exception("ERRO! - Esperado um então!");
         }
     }
 
-    private void analisaEnquanto() {
+    private void analisaEnquanto() throws Exception {
         int auxRot1, auxRot2;
 
-        auxRot1 = rotulo;
+       // auxRot1 = rotulo;
         /*
 GERA
 */
 
-        rotulo = rotulo + 1;
+      //  rotulo = rotulo + 1;
 
 
         i++;
         analisaExpressao();
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
-            auxRot2 = rotulo;
+           // auxRot2 = rotulo;
             //GERA
-            rotulo = rotulo + 1;
+           // rotulo = rotulo + 1;
             i++;
             analisaComandoSimples();
             //GERA
             //GERA
         } else {
-            System.out.println("ERROU!");
+            throw new Exception("ERRO! - Esperado um faca!");
         }
     }
 
-    private void analisaLeia() {
+    private void analisaLeia() throws Exception {
         i++;
-        String simboloAtual = tokens.get(i).getSimbolo();
-        if (simboloAtual.equals(Pontuacoes.sabre_parenteses.toString())) {
-            if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
+        if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
+            i++;
+            if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
+                //if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                 i++;
-                simboloAtual = tokens.get(i).getSimbolo();
-                if (simboloAtual.equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
+                if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
                 } else {
-                    System.out.println("ERROU");
+                    throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                 }
+                // }
+            } else {
+                throw new Exception("ERRO! - Esperado um identificador!");
             }
         } else {
-            System.out.println("ERROU");
+            throw new Exception("ERRO! - Esperado um abre parenteses '('!");
         }
     }
 
-    private void analisaEscreva() {
+    private void analisaEscreva() throws Exception {
         i++;
-        String simboloAtual = tokens.get(i).getSimbolo();
 
-        if (simboloAtual.equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
+        if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
-            simboloAtual = tokens.get(i).getSimbolo();
-            if (simboloAtual.equals(IDs.Sidentificador.toString())) {
-                if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) {
+            if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
+                //if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) {
                     i++;
-                    simboloAtual = tokens.get(i).getSimbolo();
-                    if (simboloAtual.equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
+                    if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
                     } else {
-                        System.out.println("ERROU!");
+                        throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
-                } else {
-                    System.out.println("ERROU!");
-                }
+               // } else {
+                //    System.out.println("analisaEscreva - ERRO - Esperado um!");
+               // }
             } else {
-                System.out.println("ERROU!");
+                throw new Exception("ERRO! - Esperado um Identificador!");
             }
         } else {
-            System.out.println("ERROU!");
+            throw new Exception("ERRO! - Esperado um abre parenteses '('!");
         }
     }
 
-    private void analisaExpressao() {
-        String simboloAtual = tokens.get(i).getSimbolo();
-        if (simboloAtual.equals(OperadoresRelacional.Smaior.toString()) ||
-                simboloAtual.equals(OperadoresRelacional.Smaiorig.toString()) ||
-                simboloAtual.equals(OperadoresRelacional.Sig.toString()) ||
-                simboloAtual.equals(OperadoresRelacional.Smenor.toString()) ||
-                simboloAtual.equals(OperadoresRelacional.Smenorig.toString()) ||
-                simboloAtual.equals(OperadoresRelacional.Sdif.toString())) {
+    private void analisaExpressao() throws Exception {
+        analisaExpressaoSimples();
+
+        if (tokens.get(i).getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
+                tokens.get(i).getSimbolo().equals(OperadoresRelacional.Smaiorig.toString()) ||
+                tokens.get(i).getSimbolo().equals(OperadoresRelacional.Sig.toString()) ||
+                tokens.get(i).getSimbolo().equals(OperadoresRelacional.Smenor.toString()) ||
+                tokens.get(i).getSimbolo().equals(OperadoresRelacional.Smenorig.toString()) ||
+                tokens.get(i).getSimbolo().equals(OperadoresRelacional.Sdif.toString())) {
             i++;
             analisaExpressaoSimples();
         }
     }
 
-    private void analisaExpressaoSimples() {
-        String simboloAtual = tokens.get(i).getSimbolo();
-        if(simboloAtual.equals(Operadores.MAIS) || simboloAtual.equals(Operadores.MENOS)){
+    private void analisaExpressaoSimples() throws Exception {
+        if (tokens.get(i).getSimbolo().equals(Operadores.MAIS) || tokens.get(i).getSimbolo().equals(Operadores.MENOS)) {
             i++;
-            simboloAtual = tokens.get(i).getSimbolo();
+        }
+        analisaTermo();
+        while (tokens.get(i).getSimbolo().equals(Operadores.MAIS) || tokens.get(i).getSimbolo().equals(Operadores.MENOS) || tokens.get(i).getSimbolo().equals(IDs.Sou.toString())) {
+            i++;
+
             analisaTermo();
-            while(simboloAtual.equals(Operadores.MAIS) || simboloAtual.equals(Operadores.MENOS) || simboloAtual.equals(IDs.Sou.toString())){
-                i++;
-                simboloAtual = tokens.get(i).getSimbolo();
-                analisaTermo();
-            }
         }
     }
 
@@ -330,7 +368,7 @@ GERA
         return true;
     }
 
-    private void analisaFator() {
+    private void analisaFator() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
            /* if(pesquisaTabela()){
                 if(){
@@ -342,6 +380,7 @@ GERA
             System.out.println("ERROU!");
         }
        */
+            i++;
         } else {
             if (tokens.get(i).getSimbolo().equals(Operadores.NUMERO)) {
                 i++;
@@ -349,37 +388,38 @@ GERA
                 if (tokens.get(i).getSimbolo().equals(IDs.Snao.toString())) {
                     i++;
                     analisaFator();
-                } else {
-                    if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
+                } else if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
                         // Expressão está entre parentes
-                        System.out.println("Expressão está entre parentes");
+                        //System.out.println("Expressão está entre parentes");
                         i++;
                         analisaExpressao();
                         if (tokens.get(i).getSimbolo().equals(Pontuacoes.sfecha_parenteses.toString())) {
                             i++;
                         } else {
-                            System.out.println("ERRO!");
+                            throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                         }
-                    }
+                    } else if (tokens.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
+                        i++;
+                    } else {
+                    throw new Exception("ERRO! - Esperado um verdadeiro ou falso!");
                 }
             }
         }
     }
 
-    private void analisaTermo() {
+    private void analisaTermo() throws Exception {
         analisaFator();
-        String simboloAtual = tokens.get(i).getSimbolo();
-        while ((simboloAtual.equals(Operadores.MULTIPLICACAO)) || simboloAtual.equals(IDs.Sdiv.toString()) || simboloAtual.equals(IDs.sse.toString())) {
+        while ((tokens.get(i).getSimbolo().equals(Operadores.MULTIPLICACAO)) || tokens.get(i).getSimbolo().equals(IDs.Sdiv.toString()) || tokens.get(i).getSimbolo().equals(IDs.Se.toString())) {
             i++;
             analisaFator();
         }
     }
 
-    private void analisaChamadaProcedimento(){
+    private void analisaChamadaProcedimento() {
 
     }
 
-    private void analisaChamadaFuncao(){
+    private void analisaChamadaFuncao() {
 
     }
 

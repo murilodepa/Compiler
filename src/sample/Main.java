@@ -7,8 +7,6 @@
 
 package sample;
 
-import analiseLexical.IDs;
-import analiseLexical.Lexical;
 import analiseLexical.Token;
 import analiseSintatica.Sintatico;
 import javafx.application.Application;
@@ -32,11 +30,11 @@ public class Main /* extends Application */ {
     }
 */
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         LinkedList<Token> tokens;
-        Sintatico sintatico = new Sintatico("./exemplo.txt");
+        Sintatico sintatico = new Sintatico("./testes/sintatico/sint6.txt");
 
-        // launch(args);
+        // launch(args);/
     }
 
 
