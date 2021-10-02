@@ -118,31 +118,30 @@ public class Sintatico {
         analisaTipo();
     }
 
-/*    public boolean pesquisaDuplicadoVarTabela() {
-        return true;
-    }
-*/
+//    public boolean pesquisaDuplicadoVarTabela() {
+//        return true;
+//    }
+
     public void analisaTipo() throws Exception {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
-        } else {
+        } /* else {
             //colocaTipoTabela(tokens.get(i).getLexema());
-        }
+        } */
         i++;
     }
 
     public void analisaSubrotinas() throws Exception {
-        //int auxRot;
-        int flag;
-        flag = 0;
-        if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
+        //int auxRot, flag = 0;
+
+      //  if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             /*
              * auxRot = rotulo
              * gera()
              * rotulo ++
              * flag = 1
              * */
-        }
+      //   }
 
         while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString())){
@@ -185,7 +184,7 @@ public class Sintatico {
         i++;
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
             i++;
-            if(tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS.toString())){
+            if(tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)){
                 i++;
                 if(tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())){
                     i++;
@@ -245,10 +244,10 @@ public class Sintatico {
             i++;
             analisaExpressao();
             //analisaAtribuicao();
-        } else {
+        } /* else {
             //i++;
             //chamadaProcedimento();
-        }
+        } */
     }
 
     private void analisaSe() throws Exception {
@@ -267,9 +266,8 @@ public class Sintatico {
     }
 
     private void analisaEnquanto() throws Exception {
-        int auxRot1, auxRot2;
+        // int auxRot1 = rotulo, auxRot2;
 
-       // auxRot1 = rotulo;
         /*
 GERA
 */
@@ -363,11 +361,11 @@ GERA
             analisaTermo();
         }
     }
-
+/*
     private boolean pesquisaDeclaracaoVariavelTabela(String lexema) {
         return true;
     }
-
+*/
     private void analisaFator() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
            /* if(pesquisaTabela()){
@@ -414,7 +412,7 @@ GERA
             analisaFator();
         }
     }
-
+/*
     private void analisaChamadaProcedimento() {
 
     }
@@ -422,5 +420,5 @@ GERA
     private void analisaChamadaFuncao() {
 
     }
-
+*/
 }
