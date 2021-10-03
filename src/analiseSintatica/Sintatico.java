@@ -80,7 +80,7 @@ public class Sintatico {
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                         i++;
                     } else {
-                        throw new Exception("ERRO! - Esperado um ponto e virgula ';'!");
+                        throw new Exception("aaaaaaaaaaaERRO! - Esperado um ponto e virgula ';'!");
                     }
                 }
             } else {
@@ -212,12 +212,17 @@ public class Sintatico {
                         analisaComandoSimples();
                     }
                 } else {
-                    throw new Exception("ERRO! - Esperado um ponto e vírgula!");
+                    if(i+1 != tokens.size()-1 && tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS) && !tokens.get(i).getSimbolo().equals(OperadoresRelacional.Sig.toString())) {
+                        throw new Exception("ERRO! - Por favor, utilizar ':=' para atribuição!");
+                    } else{
+                        throw new Exception("ERRO! - Esperado terminar com um ';' ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
+                    }
+
                 }
             }
             i++;
         } else {
-            throw new Exception("ERRO! - Esperado um inicio no lugar do simbolo: " + tokens.get(i).getSimbolo());
+            throw new Exception("ERRO! - Esperado um inicio ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
         }
     }
 
@@ -286,7 +291,7 @@ GERA
             //GERA
             //GERA
         } else {
-            throw new Exception("ERRO! - Esperado um faca!");
+            throw new Exception("ERRO! - Esperado um faca ou algum problema na condição do enquanto!");
         }
     }
 
@@ -299,7 +304,6 @@ GERA
                 i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
-                    analisaPontoVirgulaAntesDoFim();
                 } else {
                     throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                 }
@@ -322,7 +326,6 @@ GERA
                     i++;
                     if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
-                        analisaPontoVirgulaAntesDoFim();
                     } else {
                         throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
@@ -394,14 +397,17 @@ GERA
                     analisaExpressao();
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.sfecha_parenteses.toString())) {
                         i++;
-                        analisaPontoVirgulaAntesDoFim();
                     } else {
-                        throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
+                        if(tokens.get(i-1).getSimbolo().equals(Operadores.NUMERO) && tokens.get(i).getSimbolo().equals(Pontuacoes.Sponto.toString())) {
+                            throw new Exception("ERRO! - Não é esperado números decimais ou com ponto '.'!");
+                        } else{
+                            throw new Exception("ERRO! - Esperado um fecha parenteses ')' ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
+                        }
                     }
                 } else if (tokens.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
                     i++;
                 } else {
-                    throw new Exception("ERRO! - Expressão de comando inválida");
+                    throw new Exception("ERRO! - Operador relacional ou lógico inválido, para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
                 }
             }
         }
@@ -415,15 +421,6 @@ GERA
         }
     }
 
-    private void analisaPontoVirgulaAntesDoFim() throws Exception {
-        if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
-            i++;
-            if(tokens.get(i).getSimbolo().equals(IDs.sfim.toString())) {
-                throw new Exception("ERRO! - Ponto e vírgula nao esperado antes do fim");
-            }
-            i--;
-        }
-    }
 /*
     private void analisaChamadaProcedimento() {
 
