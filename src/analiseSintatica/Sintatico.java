@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 created by Computer Engineering students (Cezar Marrote Manzano,
+ * Copyright (c) 2021 created by Computer Engineering students (Cesar Marrote Manzano,
  * Christopher de Oliveira Souza and Murilo de Paula Araujo) at PUC-Campinas.
  *
  * All rights reserved.
@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class Sintatico {
     LinkedList<Token> tokens;
-   // public int rotulo;
+    //public int rotulo;
     private int i = 0;
     //private TabelaDeSimbolos tabelaDeSimbolos;
 
@@ -99,7 +99,6 @@ public class Sintatico {
                         if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString())) {
                             i++;
                             if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
-                                //throw new Exception("ERRO! - Não é esperado dois pontos ':'!");
                                 throw new Exception("ERRO! - Para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por dois pontos ':'!");
                             }
                         }
@@ -124,7 +123,7 @@ public class Sintatico {
 
     public void analisaTipo() throws Exception {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
-            throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
+            throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
         } /* else {
             //colocaTipoTabela(tokens.get(i).getLexema());
         } */
@@ -218,7 +217,7 @@ public class Sintatico {
             }
             i++;
         } else {
-            throw new Exception("ERRO! - Esperado um inicio no no lugar do simbolo: " + tokens.get(i).getSimbolo());
+            throw new Exception("ERRO! - Esperado um inicio no lugar do simbolo: " + tokens.get(i).getSimbolo());
         }
     }
 
@@ -300,6 +299,7 @@ GERA
                 i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
+                    analisaPontoVirgulaAntesDoFim();
                 } else {
                     throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                 }
@@ -322,6 +322,7 @@ GERA
                     i++;
                     if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
+                        analisaPontoVirgulaAntesDoFim();
                     } else {
                         throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
@@ -357,15 +358,16 @@ GERA
         analisaTermo();
         while (tokens.get(i).getSimbolo().equals(Operadores.MAIS) || tokens.get(i).getSimbolo().equals(Operadores.MENOS) || tokens.get(i).getSimbolo().equals(IDs.Sou.toString())) {
             i++;
-
             analisaTermo();
         }
     }
+
 /*
     private boolean pesquisaDeclaracaoVariavelTabela(String lexema) {
         return true;
     }
 */
+
     private void analisaFator() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
            /* if(pesquisaTabela()){
@@ -387,19 +389,19 @@ GERA
                     i++;
                     analisaFator();
                 } else if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
-                        // Expressão está entre parentes
-                        //System.out.println("Expressão está entre parentes");
+                    // Expressão está entre parentes
+                    i++;
+                    analisaExpressao();
+                    if (tokens.get(i).getSimbolo().equals(Pontuacoes.sfecha_parenteses.toString())) {
                         i++;
-                        analisaExpressao();
-                        if (tokens.get(i).getSimbolo().equals(Pontuacoes.sfecha_parenteses.toString())) {
-                            i++;
-                        } else {
-                            throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
-                        }
-                    } else if (tokens.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
-                        i++;
+                        analisaPontoVirgulaAntesDoFim();
                     } else {
-                    throw new Exception("ERRO! - Esperado um verdadeiro ou falso!");
+                        throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
+                    }
+                } else if (tokens.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
+                    i++;
+                } else {
+                    throw new Exception("ERRO! - Expressão de comando inválida");
                 }
             }
         }
@@ -410,6 +412,16 @@ GERA
         while ((tokens.get(i).getSimbolo().equals(Operadores.MULTIPLICACAO)) || tokens.get(i).getSimbolo().equals(IDs.Sdiv.toString()) || tokens.get(i).getSimbolo().equals(IDs.Se.toString())) {
             i++;
             analisaFator();
+        }
+    }
+
+    private void analisaPontoVirgulaAntesDoFim() throws Exception {
+        if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
+            i++;
+            if(tokens.get(i).getSimbolo().equals(IDs.sfim.toString())) {
+                throw new Exception("ERRO! - Ponto e vírgula nao esperado antes do fim");
+            }
+            i--;
         }
     }
 /*
