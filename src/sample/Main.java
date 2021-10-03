@@ -32,7 +32,7 @@ public class Main /* extends Application */ {
 
     public static void main(String[] args) throws Exception {
         LinkedList<Token> tokens;
-        Sintatico sintatico = new Sintatico("./testes/sintatico/sint6.txt");
+        Sintatico sintatico = new Sintatico("./testes/sintatico/sint16.txt");
 
         // launch(args);/
     }

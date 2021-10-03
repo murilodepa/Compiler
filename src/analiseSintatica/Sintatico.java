@@ -44,7 +44,7 @@ public class Sintatico {
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                      analisaBloco();
-                    if (tokens.get(i).getSimbolo().equals(Pontuacoes.Sponto.toString())) {
+                    if (i != tokens.size() && tokens.get(i).getSimbolo().equals(Pontuacoes.Sponto.toString())) {
                         if (i == tokens.size()-1) {
                             System.out.println("SUCESSO!");
                         } else {
