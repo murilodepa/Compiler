@@ -224,14 +224,14 @@ public class Sintatico {
                     if(i+1 != tokens.size()-1 && tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS) && !tokens.get(i).getSimbolo().equals(OperadoresRelacional.Sig.toString())) {
                         throw new Exception("ERRO! - Por favor, utilizar ':=' para atribuição!");
                     } else{
-                        throw new Exception("ERRO! - Esperado terminar com um ';' ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
+                        throw new Exception("ERRO! - Esperado terminar com um ';' ou para o elemento: '" + tokens.get(i-1).getLexema() + "'\n não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
                     }
 
                 }
             }
             i++;
         } else {
-            throw new Exception("ERRO! - Esperado um inicio ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
+            throw new Exception("ERRO! - Esperado um inicio ou para o elemento: '" + tokens.get(i-1).getLexema() + "'\n não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
         }
     }
 
@@ -410,13 +410,13 @@ GERA
                         if(tokens.get(i-1).getSimbolo().equals(Operadores.NUMERO) && tokens.get(i).getSimbolo().equals(Pontuacoes.Sponto.toString())) {
                             throw new Exception("ERRO! - Não é esperado números decimais ou com ponto '.'!");
                         } else{
-                            throw new Exception("ERRO! - Esperado um fecha parenteses ')' ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
+                            throw new Exception("ERRO! - Esperado um fecha parenteses ')'\n ou para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema() + "'!");
                         }
                     }
                 } else if (tokens.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
                     i++;
                 } else {
-                    throw new Exception("ERRO! - Operador relacional ou lógico inválido, para o elemento: '" + tokens.get(i-1).getLexema() + "' não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
+                    throw new Exception("ERRO! - Operador relacional ou lógico inválido, para o elemento: '" + tokens.get(i-1).getLexema() + "' \n não é esperado ser seguido por: '" + tokens.get(i).getLexema()+ "'!");
                 }
             }
         }
