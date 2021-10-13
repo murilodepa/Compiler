@@ -44,6 +44,7 @@ public class Main  extends Application  {
         textArea.setPrefHeight(650);
         textArea.setPrefWidth(400);
         Label label = new Label("");
+        Label codigo = new Label("Código: ");
         final FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
@@ -98,11 +99,12 @@ public class Main  extends Application  {
         });
 
         final GridPane inputGridPane = new GridPane();
+        GridPane.setConstraints(codigo, 5, 2);
         GridPane.setConstraints(textArea, 5, 3);
         GridPane.setConstraints(label,5,4);
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(12);
-        inputGridPane.getChildren().addAll(textArea,label);
+        inputGridPane.getChildren().addAll(textArea,label,codigo);
 
         VBox vbox = new VBox(menuBar,inputGridPane);
         primaryStage.setScene(new Scene(vbox, 1000, 800));
