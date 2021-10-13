@@ -18,18 +18,52 @@ import java.util.LinkedList;
 
 public class Lexical {
     LinkedList<Token> tokens;
-    final private char[] arquivo;
+    private char[] arquivo;
     private int i;
     private int linha;
     private int coluna;
 
-    public Lexical(String caminhoDoArquivo) throws IOException {
+    public char[] getArquivo() {
+        return arquivo;
+    }
+
+    public void setArquivo(char[] arquivo) {
+        this.arquivo = arquivo;
+    }
+
+    public Lexical() throws IOException {
         tokens = new LinkedList<>();
-        byte[] arquivoLido = Files.readAllBytes(Paths.get(caminhoDoArquivo));
-        arquivo = new String(arquivoLido, StandardCharsets.UTF_8).toCharArray();
         i = 0;
         linha = 1;
         coluna = -1;
+    }
+
+    public void setTokens(LinkedList<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    public int getI() {
+        return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public int getColuna() {
+        return coluna;
+    }
+
+    public void setColuna(int coluna) {
+        this.coluna = coluna;
     }
 
     public void verificarLinha() {
@@ -167,4 +201,7 @@ public class Lexical {
     public LinkedList<Token> getTokens() {
         return tokens;
     }
+
+
+
 }

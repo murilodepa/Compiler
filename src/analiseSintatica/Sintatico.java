@@ -17,20 +17,29 @@ public class Sintatico {
     //public int rotulo;
     private int i = 0;
     //private TabelaDeSimbolos tabelaDeSimbolos;
+    Lexical lexical;
 
-    public Sintatico(String caminhoDoArquivo) throws Exception {
-        Lexical lexical = new Lexical(caminhoDoArquivo);
+    public Sintatico() throws Exception {
+        lexical = new Lexical();
         //tabelaDeSimbolos = new TabelaDeSimbolos();
-        try {
+    }
+
+    public void limpar() {
+        tokens=null;
+        i=0;
+        lexical.setTokens(new LinkedList<>());
+        lexical.setI(0);
+        lexical.setLinha(1);
+        lexical.setColuna(-1);
+    }
+
+    public void run () throws Exception {
             lexical.analisadorLexical();
             tokens = lexical.getTokens();
             for (Token token : tokens) {
                 System.out.print(token.getLexema() + " -> ");
                 System.out.println(token.getSimbolo());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         analisadorSintatico();
     }
@@ -421,6 +430,9 @@ GERA
         }
     }
 
+    public Lexical getLexical() {
+        return lexical;
+    }
 /*
     private void analisaChamadaProcedimento() {
 
