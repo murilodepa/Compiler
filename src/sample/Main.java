@@ -93,7 +93,6 @@ public class Main  extends Application  {
 
 
         MenuBar menuBar = new MenuBar();
-        menuBar.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         menuArquivo.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: roboto");
         menuFuncaos.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: roboto");
         menuBar.getMenus().addAll(menuArquivo, menuFuncaos);
