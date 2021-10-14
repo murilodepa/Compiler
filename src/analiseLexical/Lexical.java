@@ -9,11 +9,6 @@ package analiseLexical;
 
 import Utils.Caracteres;
 import Utils.Operadores;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 
 public class Lexical {
@@ -31,7 +26,7 @@ public class Lexical {
         this.arquivo = arquivo;
     }
 
-    public Lexical() throws IOException {
+    public Lexical() {
         tokens = new LinkedList<>();
         i = 0;
         linha = 1;
@@ -42,24 +37,12 @@ public class Lexical {
         this.tokens = tokens;
     }
 
-    public int getI() {
-        return i;
-    }
-
     public void setI(int i) {
         this.i = i;
     }
 
-    public int getLinha() {
-        return linha;
-    }
-
     public void setLinha(int linha) {
         this.linha = linha;
-    }
-
-    public int getColuna() {
-        return coluna;
     }
 
     public void setColuna(int coluna) {
@@ -201,7 +184,4 @@ public class Lexical {
     public LinkedList<Token> getTokens() {
         return tokens;
     }
-
-
-
 }
