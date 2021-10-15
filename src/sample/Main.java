@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Stack;
 
 public class Main extends Application {
 
@@ -121,7 +122,7 @@ public class Main extends Application {
     /**
      * Método responsável por realizar a validação e compilação do código de entrada
      */
-    public void compilarPrograma(Sintatico sintatico, Alert alerta, Label labelMensagem) {
+    public static void compilarPrograma(Sintatico sintatico, Alert alerta, Label labelMensagem) {
         try {
             try {
                 if (sintatico.getLexical().getArquivo() == null) {
@@ -144,7 +145,7 @@ public class Main extends Application {
     /**
      * Método responsável por abrir o arquivo
      */
-    public void abrirArquivo(FileChooser fileChooser, Stage primaryStage, TextField areaTextoCaminhoArquivo, Sintatico sintatico, TextArea areaTextoCodigo) {
+    public static void abrirArquivo(FileChooser fileChooser, Stage primaryStage, TextField areaTextoCaminhoArquivo, Sintatico sintatico, TextArea areaTextoCodigo) {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         try {
             if (selectedFile != null) {
