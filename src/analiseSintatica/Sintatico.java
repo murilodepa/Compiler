@@ -16,12 +16,12 @@ public class Sintatico {
     LinkedList<Token> tokens;
     //public int rotulo;
     private int i = 0;
-    //private TabelaDeSimbolos tabelaDeSimbolos;
+    private TabelaDeSimbolos tabelaDeSimbolos;
     Lexical lexical;
 
     public Sintatico() throws Exception {
         lexical = new Lexical();
-        //tabelaDeSimbolos = new TabelaDeSimbolos();
+        tabelaDeSimbolos = new TabelaDeSimbolos();
     }
 
     public void limpar() {
@@ -31,6 +31,7 @@ public class Sintatico {
         lexical.setI(0);
         lexical.setLinha(1);
         lexical.setColuna(-1);
+        tabelaDeSimbolos=new TabelaDeSimbolos();
     }
 
     public void run () throws Exception {
@@ -49,7 +50,7 @@ public class Sintatico {
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                //tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), -1, "", "");
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "nomedeprograma", "");
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                      analisaBloco();
@@ -89,7 +90,7 @@ public class Sintatico {
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                         i++;
                     } else {
-                        throw new Exception("aaaaaaaaaaaERRO! - Esperado um ponto e virgula ';'!");
+                        throw new Exception("ERRO! - Esperado um ponto e virgula ';'!");
                     }
                 }
             } else {
@@ -101,8 +102,8 @@ public class Sintatico {
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-             //   if (!pesquisaDuplicadoVarTabela()) {
-                    //insereTabela(tokens.get(i).getLexema());
+                if (!tabelaDeSimbolos.pesquisarDuplicidade(tokens.get(i).getLexema())) {
+                    tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "variavel", "");
                     i++;
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString()) || tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
                         if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString())) {
@@ -114,9 +115,9 @@ public class Sintatico {
                     } else {
                         throw new Exception("ERRO! - Esperado uma vírgula ',' ou dois pontos ':'!");
                     }
-             //   } else {
-             //       System.out.println("analisaVariaveis - ERRO na inserção da tabela - ");
-            //    }
+                } else {
+                    throw new Exception("analisaVariaveis - ERRO na inserção da tabela - ");
+                }
             } else {
                 throw new Exception("ERRO! - Esperado um identificador!");
             }
@@ -133,9 +134,9 @@ public class Sintatico {
     public void analisaTipo() throws Exception {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
-        } /* else {
-            //colocaTipoTabela(tokens.get(i).getLexema());
-        } */
+        }  else {
+            tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema());
+        }
         i++;
     }
 
@@ -172,42 +173,57 @@ public class Sintatico {
 
     private void analisaDeclaracaoProcedimento() throws Exception {
         i++;
+        String galho="L";
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-            // pesquisaDeclaracaoProcedimentoTabela(tokens.lexema)
-            // insereTabela()
-            // Se não encontrou
-            i++;
-            if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
-                analisaBloco();
+            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", "");
+                i++;
+                if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
+                    analisaBloco();
+                } else {
+                    throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
+                }
             } else {
-                throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
+                throw new Exception("ERRO! - procedimento já declarado!");
             }
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
+        tabelaDeSimbolos.desempilhaMarca();
         // Demsempilha ou Volta Nível
     }
 
     private void analisaDeclaracaoFuncao() throws Exception {
         i++;
+        String galho="L";
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
-            i++;
-            if(tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)){
+            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", "");
                 i++;
-                if(tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())){
+                if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
                     i++;
-                    if(tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())){
-                        analisaBloco();
+                    if (tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) || tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
+                        if(tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()))
+                            tabelaDeSimbolos.alteraTipoTopo("função inteiro");
+                        else
+                            tabelaDeSimbolos.alteraTipoTopo("função boolean");
+                        i++;
+                        if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
+                            analisaBloco();
+                        }
+                    } else {
+                        throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
                     }
                 } else {
-                    throw new Exception("ERRO! - Esperado um inteiro ou booleano!");
+                    throw new Exception("ERRO! - Esperado um dois pontos ';'!");
                 }
             } else {
-                throw new Exception("ERRO! - Esperado um dois pontos ';'!");
+                throw new Exception("ERRO! - Função já declarada !");
             }
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
+        tabelaDeSimbolos.desempilhaMarca();
     }
 
     public void analisaComandos() throws Exception {
@@ -257,10 +273,14 @@ public class Sintatico {
             i++;
             analisaExpressao();
             //analisaAtribuicao();
-        } /* else {
+        } else {
+            //System.out.println("\n"+tokens.get(i-1).getLexema());
+            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i-1).getLexema())){
+                throw new Exception("ERRO! - Procedimento não declarado");
+            }
             //i++;
             //chamadaProcedimento();
-        } */
+        }
     }
 
     private void analisaSe() throws Exception {
@@ -309,14 +329,16 @@ GERA
         if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                //if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
+                if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                 i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
                 } else {
                     throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
+                    }
+                } else {
+                    throw new Exception("ERRO! - variável não encontrada!");
                 }
-                // }
             } else {
                 throw new Exception("ERRO! - Esperado um identificador!");
             }
@@ -331,16 +353,16 @@ GERA
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                //if (pesquisaDeclaracaoVariavelTabela(tokens.get(i).getLexema())) {
+                if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
                     i++;
                     if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
                     } else {
                         throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
-               // } else {
-                //    System.out.println("analisaEscreva - ERRO - Esperado um!");
-               // }
+                } else {
+                    throw new Exception("ERRO! - variável não encontrada tchum");
+                }
             } else {
                 throw new Exception("ERRO! - Esperado um Identificador!");
             }
@@ -382,6 +404,13 @@ GERA
 
     private void analisaFator() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
+            Simbolo simbolo=tabelaDeSimbolos.pesquisaLocal(tokens.get(i).getLexema());
+            if(simbolo!=null) {
+            if((simbolo.getTipo().equals("função inteiro") ||  simbolo.getTipo().equals("função booleano"))) {
+                i++;
+            } else {
+                i++;
+            }
            /* if(pesquisaTabela()){
                 if(){
 
@@ -391,8 +420,9 @@ GERA
             } else{
             System.out.println("ERROU!");
         }
-       */
-            i++;
+       */} else {
+                throw new Exception("ERRO! - simbolo não declarado!");
+            }
         } else {
             if (tokens.get(i).getSimbolo().equals(Operadores.NUMERO)) {
                 i++;

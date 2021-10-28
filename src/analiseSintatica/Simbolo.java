@@ -10,11 +10,11 @@ package analiseSintatica;
 public class Simbolo {
 
     private String lexema;
-    private int escopo;
+    private String escopo;
     private String tipo;
     private String memoria;
 
-    public Simbolo(String lexema, int escopo, String tipo, String memoria) {
+    public Simbolo(String lexema, String escopo, String tipo, String memoria) {
         this.lexema = lexema;
         this.escopo = escopo;
         this.tipo = tipo;
@@ -25,7 +25,7 @@ public class Simbolo {
         return lexema;
     }
 
-    public int getEscopo() {
+    public String getEscopo() {
         return escopo;
     }
 
@@ -41,7 +41,7 @@ public class Simbolo {
         this.lexema = lexema;
     }
 
-    public void setEscopo(int escopo) {
+    public void setEscopo(String escopo) {
         this.escopo = escopo;
     }
 
