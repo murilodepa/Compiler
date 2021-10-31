@@ -7,10 +7,16 @@
 
 package analiseSintatica;
 
+import Utils.AnalisadorExpressao;
+import Utils.Conversor;
+import Utils.Objeto;
 import Utils.Operadores;
 import analiseLexical.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class Sintatico {
     LinkedList<Token> tokens;
@@ -18,10 +24,15 @@ public class Sintatico {
     private int i = 0;
     private TabelaDeSimbolos tabelaDeSimbolos;
     Lexical lexical;
+    private List<Objeto> objetoList;
+    Conversor conversor;
+    AnalisadorExpressao analisadorExpressao;
 
     public Sintatico() throws Exception {
         lexical = new Lexical();
         tabelaDeSimbolos = new TabelaDeSimbolos();
+        conversor= new Conversor();
+        analisadorExpressao= new AnalisadorExpressao();
     }
 
     public void limpar() {
@@ -175,7 +186,7 @@ public class Sintatico {
         i++;
         String galho="L";
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
+            if(!tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", "");
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
@@ -197,7 +208,7 @@ public class Sintatico {
         i++;
         String galho="L";
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
-            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
+            if(!tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", "");
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
@@ -271,7 +282,22 @@ public class Sintatico {
         i++;
         if (tokens.get(i).getSimbolo().equals(Operadores.ATRIBUICAO)) {
             i++;
+            int inicio=i;
+            objetoList=new ArrayList<>();
+            List<Token> expressao= new ArrayList<>();
             analisaExpressao();
+            String tipoRetorno= null;
+            expressao=tokens.subList(inicio,i);
+            for(Objeto objeto:objetoList) {
+                expressao.get(objeto.getPosicao()-inicio).setLexema(objeto.getValor());
+                expressao.get(objeto.getPosicao()-inicio).setSimbolo(objeto.getSimbolo());
+            }
+
+            expressao=conversor.converterPosFixa(expressao);
+            tipoRetorno=analisadorExpressao.analisarExpressao(expressao,tabelaDeSimbolos);
+            if(!tipoRetorno.equals(tabelaDeSimbolos.getTipo(tokens.get(inicio-2).getLexema()))){
+                throw new Exception("Erro ! atribuição de tipos inválidos");
+            }
             //analisaAtribuicao();
         } else {
             //System.out.println("\n"+tokens.get(i-1).getLexema());
@@ -285,7 +311,25 @@ public class Sintatico {
 
     private void analisaSe() throws Exception {
         i++;
+
+        int inicio=i;
+        objetoList=new ArrayList<>();
+        List<Token> expressao= new ArrayList<>();
         analisaExpressao();
+        String tipoRetorno= null;
+        expressao=tokens.subList(inicio,i);
+        for(Objeto objeto:objetoList) {
+            expressao.get(objeto.getPosicao()-inicio).setLexema(objeto.getValor());
+            expressao.get(objeto.getPosicao()-inicio).setSimbolo(objeto.getSimbolo());
+        }
+
+        expressao=conversor.converterPosFixa(expressao);
+        tipoRetorno=analisadorExpressao.analisarExpressao(expressao,tabelaDeSimbolos);
+        if(!tipoRetorno.equals("B")){
+            throw new Exception("Erro ! tipo errado para comando SE");
+        }
+
+
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
             i++;
             analisaComandoSimples();
@@ -306,10 +350,23 @@ GERA
 */
 
       //  rotulo = rotulo + 1;
-
-
         i++;
+        int inicio=i;
+        objetoList=new ArrayList<>();
+        List<Token> expressao= new ArrayList<>();
         analisaExpressao();
+        String tipoRetorno= null;
+        expressao=tokens.subList(inicio,i);
+        for(Objeto objeto:objetoList) {
+            expressao.get(objeto.getPosicao()-inicio).setLexema(objeto.getValor());
+            expressao.get(objeto.getPosicao()-inicio).setSimbolo(objeto.getSimbolo());
+        }
+
+        expressao=conversor.converterPosFixa(expressao);
+        tipoRetorno=analisadorExpressao.analisarExpressao(expressao,tabelaDeSimbolos);
+        if(!tipoRetorno.equals("B")){
+            throw new Exception("Erro ! tipo errado para comando ENQUANTO");
+        }
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
            // auxRot2 = rotulo;
@@ -329,7 +386,7 @@ GERA
         if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
+                if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                 i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
@@ -353,7 +410,7 @@ GERA
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
+                if (tabelaDeSimbolos.pesquisaGlobalVariavelFunc(tokens.get(i).getLexema())) {
                     i++;
                     if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
@@ -372,6 +429,7 @@ GERA
     }
 
     private void analisaExpressao() throws Exception {
+
         analisaExpressaoSimples();
 
         if (tokens.get(i).getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
@@ -387,6 +445,11 @@ GERA
 
     private void analisaExpressaoSimples() throws Exception {
         if (tokens.get(i).getSimbolo().equals(Operadores.MAIS) || tokens.get(i).getSimbolo().equals(Operadores.MENOS)) {
+            if(tokens.get(i).getSimbolo().equals(Operadores.MAIS)){
+                objetoList.add(new Objeto(i,"+u",Operadores.POSITIVO));
+            } else {
+                objetoList.add(new Objeto(i,"-u",Operadores.NEGATIVO));
+            }
             i++;
         }
         analisaTermo();

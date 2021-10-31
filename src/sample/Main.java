@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 public class Main extends Application {
 
@@ -36,7 +38,7 @@ public class Main extends Application {
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icones/CompilerIcon.png"))));
 
         TextArea areaTextoCodigo = new TextArea();
-        areaTextoCodigo.setEditable(false);
+        areaTextoCodigo.setEditable(true);
         areaTextoCodigo.setFont(new Font("Roboto", 13));
         areaTextoCodigo.setPrefHeight(650);
         areaTextoCodigo.setPrefWidth(520);
@@ -102,6 +104,7 @@ public class Main extends Application {
         String colorString = "#B7D5E5";
         vbox.setStyle("-fx-background-color:" + colorString + "; -fx-fill:" + colorString + ";");
         primaryStage.setScene(new Scene(vbox, 710, 860));
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         /* Se o usuário selecionar a opção compilar */
@@ -116,6 +119,8 @@ public class Main extends Application {
 
         /* Se o usuário selecionar a opção abrir*/
         abrir.setOnAction(actionEvent -> abrirArquivo(fileChooser, primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
+
+        areaTextoCodigo.setOnInputMethodTextChanged(InputMethodEvent -> System.out.println("\n aabbbb"));
     }
 
     /**
@@ -137,7 +142,7 @@ public class Main extends Application {
                 labelMensagem.setText(e.getMessage());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -162,5 +167,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+        //Queue<Integer>
     }
 }

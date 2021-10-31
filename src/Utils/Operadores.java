@@ -14,4 +14,6 @@ public class Operadores {
     public static final String MENOS = "Smenos";
     public static final String MULTIPLICACAO = "Smult";
     public static final String DOIS_PONTOS = "Sdoispontos";
+    public static final String POSITIVO = "Spositivo";
+    public static final String NEGATIVO = "Snegativo";
 }

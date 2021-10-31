@@ -1,14 +1,14 @@
 {Teste 1 - OK}
 programa test1;
 
-var a,b,c: inteiro;
+var a,b,c,x,y,h: inteiro;
+j:booleano;
 
 {proc 1}
 procedimento analisa1;
-var a, x: inteiro;
-       z: booleano;
+var a, x,z: inteiro;
 inicio
-  se x>1  entao
+  se x  entao
       x:= 0;
   leia(z);
   enquanto (a != 89) e (a<= 1000)  {condicao de parada}
@@ -22,7 +22,7 @@ fim;
 procedimento analisa2;
 inicio
   leia(a);
-  b:= a*a+(c div b) 
+  j:= (x + 7 * 5  div (30+y) <= (x*a+2))e(h>0)
 fim;
 
 inicio
@@ -33,4 +33,4 @@ inicio
     senao escreva(c)
 fim.
 
-{fim}   
+{fim}
