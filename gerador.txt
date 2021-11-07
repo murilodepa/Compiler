@@ -1,0 +1,7 @@
+        START                   
+        ALLOC   0       1       
+        JMP     1        
+2NULL                    
+        RETURN                  
+1NULL                   
+        HLT                     

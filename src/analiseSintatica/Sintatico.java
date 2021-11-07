@@ -13,6 +13,8 @@ import Utils.Objeto;
 import Utils.Operadores;
 import analiseLexical.*;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,22 +22,31 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class Sintatico {
     LinkedList<Token> tokens;
-    //public int rotulo;
+    public int rotulo;
+    public int var;
     private int i = 0;
     private TabelaDeSimbolos tabelaDeSimbolos;
     Lexical lexical;
     private List<Objeto> objetoList;
     Conversor conversor;
     AnalisadorExpressao analisadorExpressao;
+    FileWriter arq;
+    PrintWriter gravarArq;
 
     public Sintatico() throws Exception {
         lexical = new Lexical();
         tabelaDeSimbolos = new TabelaDeSimbolos();
         conversor= new Conversor();
         analisadorExpressao= new AnalisadorExpressao();
+        arq = new FileWriter("./gerador.txt");
+        gravarArq = new PrintWriter(arq);
+        rotulo=1;
+        var=0;
     }
 
     public void limpar() {
+        rotulo=1;
+        var=0;
         tokens=null;
         i=0;
         lexical.setTokens(new LinkedList<>());
@@ -59,6 +70,8 @@ public class Sintatico {
     public void analisadorSintatico() throws Exception {
        // rotulo = 1;
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
+            gera("        ","START   ","        ","        ");
+            gera("        ","ALLOC   ",var+"       ",++var+"       ");
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "nomedeprograma", "");
@@ -83,6 +96,9 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um programa!");
         }
+        gera("        ","HLT     ","        ","        ");
+        arq.close();
+
     }
 
     public void analisaBloco() throws Exception {
@@ -152,16 +168,14 @@ public class Sintatico {
     }
 
     public void analisaSubrotinas() throws Exception {
-        //int auxRot, flag = 0;
+        Integer auxRot=null, flag=0;
 
-      //  if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
-            /*
-             * auxRot = rotulo
-             * gera()
-             * rotulo ++
-             * flag = 1
-             * */
-      //   }
+        if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
+             auxRot = rotulo;
+             gera("        ","JMP     ",String.valueOf(rotulo),"        ");
+             rotulo ++;
+             flag = 1;
+         }
 
         while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString())){
@@ -177,9 +191,9 @@ public class Sintatico {
             }
         }
 
-        /*if(flag == 1){
-            gera()
-        }*/
+        if(flag == 1){
+            gera(String.valueOf(auxRot),"NULL   ","        ","        ");
+        }
     }
 
     private void analisaDeclaracaoProcedimento() throws Exception {
@@ -187,7 +201,9 @@ public class Sintatico {
         String galho="L";
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
             if(!tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema())) {
-                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", "");
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", String.valueOf(rotulo));
+                gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+                rotulo++;
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                     analisaBloco();
@@ -200,6 +216,8 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
+        gera("        ","RETURN  ","        ","        ");
+
         tabelaDeSimbolos.desempilhaMarca();
         // Demsempilha ou Volta Nível
     }
@@ -209,7 +227,9 @@ public class Sintatico {
         String galho="L";
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
             if(!tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
-                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", "");
+                tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", String.valueOf(rotulo));
+                gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+                rotulo++;
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
                     i++;
@@ -234,6 +254,7 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
+        gera("        ","RETURN  ","        ","        ");
         tabelaDeSimbolos.desempilhaMarca();
     }
 
@@ -343,7 +364,9 @@ public class Sintatico {
     }
 
     private void analisaEnquanto() throws Exception {
-        // int auxRot1 = rotulo, auxRot2;
+         int auxRot1 = rotulo, auxRot2;
+         gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+         rotulo++;
 
         /*
 GERA
@@ -369,13 +392,13 @@ GERA
         }
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
-           // auxRot2 = rotulo;
-            //GERA
-           // rotulo = rotulo + 1;
+            auxRot2 = rotulo;
+            gera("        ","JPMF   ",String.valueOf(rotulo),"        ");
+           rotulo = rotulo + 1;
             i++;
             analisaComandoSimples();
-            //GERA
-            //GERA
+            gera("       ","JMP     ",String.valueOf(auxRot1),"        ");
+            gera(String.valueOf(auxRot2),"NULL    ","        ","        ");
         } else {
             throw new Exception("ERRO! - Esperado um faca ou algum problema na condição do enquanto!");
         }
@@ -525,6 +548,10 @@ GERA
 
     public Lexical getLexical() {
         return lexical;
+    }
+
+    public void gera(String texto, String texto2,String texto3,String texto4){
+        gravarArq.println(texto+texto2+texto3+texto4);
     }
 /*
     private void analisaChamadaProcedimento() {

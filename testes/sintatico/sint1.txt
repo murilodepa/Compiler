@@ -8,7 +8,7 @@ j:booleano;
 procedimento analisa1;
 var a, x,z: inteiro;
 inicio
-  se x  entao
+  se x>1  entao
       x:= 0;
   leia(z);
   enquanto (a != 89) e (a<= 1000)  {condicao de parada}
