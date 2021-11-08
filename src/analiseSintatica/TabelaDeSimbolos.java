@@ -70,16 +70,20 @@ public class TabelaDeSimbolos {
         return false;
     }
 
-    public void colocaTipo(String tipo){
+    public int colocaTipo(String tipo,int endereco){
+        int contador=0;
         LinkedList<Simbolo> aux= new LinkedList<Simbolo>();
         while(!tabela.isEmpty() && tabela.peek().getTipo().contains("variavel")){
             aux.push(tabela.pop());
         }
         while(!aux.isEmpty()){
-            Simbolo simbolo = aux.remove();
+            Simbolo simbolo = aux.pop();
             simbolo.setTipo(tipo);
+            simbolo.setMemoria(String.valueOf(endereco+contador));
             tabela.push(simbolo);
+            contador++;
         }
+        return contador;
     }
 
     public boolean pesquisaGlobal(String lexema){
@@ -148,6 +152,17 @@ public class TabelaDeSimbolos {
                 aux.pop();
         }
         return false;
+    }
+
+    public String  pesquisaGlobalVariavelEndereco(String lexema){
+        LinkedList<Simbolo> aux= new LinkedList<>(tabela);
+        while(!aux.isEmpty()){
+            if(aux.peek().getLexema().equals(lexema) && aux.peek().getEscopo().equals(""))
+                return aux.peek().getMemoria();
+            else
+                aux.pop();
+        }
+        return "";
     }
 
 
@@ -219,11 +234,14 @@ public class TabelaDeSimbolos {
         return null;
     }
 
-    public void desempilhaMarca(){
+    public int desempilhaMarca(){
+        int contador=0;
         while(!tabela.isEmpty() && tabela.peek().getEscopo()!="L"){
             tabela.pop();
+            contador++;
         }
         //tabela.pop();
+        return contador;
     }
 
     public void alteraTipoTopo(String tipo){

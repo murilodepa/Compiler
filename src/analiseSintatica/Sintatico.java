@@ -70,8 +70,8 @@ public class Sintatico {
     public void analisadorSintatico() throws Exception {
        // rotulo = 1;
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
-            gera("        ","START   ","        ","        ");
-            gera("        ","ALLOC   ",var+"       ",++var+"       ");
+            gera(completar8(""),completar8("START"),completar8(""),completar8(""));
+            gera(completar8(""),completar8("ALLOC"),completar8(String.valueOf(var)),completar8(String.valueOf(++var)));
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "nomedeprograma", "");
@@ -96,7 +96,8 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um programa!");
         }
-        gera("        ","HLT     ","        ","        ");
+        gera(completar8(""), completar8("DALLOC"),completar8(String.valueOf(0)), completar8(String.valueOf(var)));
+        gera(completar8(""),completar8("HLT"),completar8(""),completar8(""));
         arq.close();
 
     }
@@ -162,7 +163,9 @@ public class Sintatico {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
         }  else {
-            tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema());
+           int contador= tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(),var);
+            gera(completar8(""),completar8("ALLOC"),completar8(String.valueOf(var)),completar8(String.valueOf(contador)));
+            var+=contador;
         }
         i++;
     }
@@ -172,7 +175,7 @@ public class Sintatico {
 
         if(tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
              auxRot = rotulo;
-             gera("        ","JMP     ",String.valueOf(rotulo),"        ");
+             gera(completar8(""),completar8("JMP"),completar8(String.valueOf(rotulo)),completar8(""));
              rotulo ++;
              flag = 1;
          }
@@ -192,7 +195,7 @@ public class Sintatico {
         }
 
         if(flag == 1){
-            gera(String.valueOf(auxRot),"NULL   ","        ","        ");
+            gera(completar8(String.valueOf(auxRot)),completar8("NULL"),completar8(""),completar8(""));
         }
     }
 
@@ -202,7 +205,7 @@ public class Sintatico {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
             if(!tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", String.valueOf(rotulo));
-                gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+                gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
                 rotulo++;
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
@@ -216,9 +219,12 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
-        gera("        ","RETURN  ","        ","        ");
-
-        tabelaDeSimbolos.desempilhaMarca();
+        int contador=tabelaDeSimbolos.desempilhaMarca();
+        if(contador>0) {
+            gera(completar8(""), completar8("DALLOC"),completar8(String.valueOf(var-contador)),completar8(String.valueOf(contador)));
+            var -= contador;
+        }
+        gera(completar8(""),completar8("RETURN"),completar8(""),completar8(""));
         // Demsempilha ou Volta Nível
     }
 
@@ -228,7 +234,7 @@ public class Sintatico {
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
             if(!tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", String.valueOf(rotulo));
-                gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+                gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
                 rotulo++;
                 i++;
                 if (tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
@@ -254,8 +260,12 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um identificador!");
         }
-        gera("        ","RETURN  ","        ","        ");
-        tabelaDeSimbolos.desempilhaMarca();
+        int contador=tabelaDeSimbolos.desempilhaMarca();
+        if(contador>0) {
+            gera(completar8(""), completar8("DALLOC"),completar8( String.valueOf(var)),completar8( String.valueOf(contador)));
+            var -= contador;
+        }
+        gera(completar8(""),completar8("RETURN"),completar8(""),completar8(""));
     }
 
     public void analisaComandos() throws Exception {
@@ -319,6 +329,8 @@ public class Sintatico {
             if(!tipoRetorno.equals(tabelaDeSimbolos.getTipo(tokens.get(inicio-2).getLexema()))){
                 throw new Exception("Erro ! atribuição de tipos inválidos");
             }
+            gera(completar8(""),completar8("STR"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(inicio-2).getLexema())),completar8(""));
+            //seguir
             //analisaAtribuicao();
         } else {
             //System.out.println("\n"+tokens.get(i-1).getLexema());
@@ -365,7 +377,7 @@ public class Sintatico {
 
     private void analisaEnquanto() throws Exception {
          int auxRot1 = rotulo, auxRot2;
-         gera(String.valueOf(rotulo),"NULL    ","        ","        ");
+         gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
          rotulo++;
 
         /*
@@ -393,12 +405,12 @@ GERA
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
             auxRot2 = rotulo;
-            gera("        ","JPMF   ",String.valueOf(rotulo),"        ");
+            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
            rotulo = rotulo + 1;
             i++;
             analisaComandoSimples();
-            gera("       ","JMP     ",String.valueOf(auxRot1),"        ");
-            gera(String.valueOf(auxRot2),"NULL    ","        ","        ");
+            gera(completar8(""),completar8("JMP"),completar8(String.valueOf(auxRot1)),completar8(""));
+            gera(completar8(String.valueOf(auxRot2)),completar8("NULL"),completar8(""),completar8(""));
         } else {
             throw new Exception("ERRO! - Esperado um faca ou algum problema na condição do enquanto!");
         }
@@ -410,7 +422,9 @@ GERA
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
-                i++;
+                    gera(completar8(""),completar8("RD"),completar8(""),completar8(""));
+                    gera(completar8(""),completar8("STR"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
+                    i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
                 } else {
@@ -433,7 +447,9 @@ GERA
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (tabelaDeSimbolos.pesquisaGlobalVariavelFunc(tokens.get(i).getLexema())) {
+                if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) {
+                    gera(completar8(""),completar8("LDV"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),completar8(""));
+                    gera(completar8(""),completar8("PRN"),completar8(""),completar8(""));
                     i++;
                     if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses))) {
                         i++;
@@ -552,6 +568,12 @@ GERA
 
     public void gera(String texto, String texto2,String texto3,String texto4){
         gravarArq.println(texto+texto2+texto3+texto4);
+    }
+    private String completar8(String string){
+        while (string.length()!=8){
+            string+=" ";
+        }
+        return string;
     }
 /*
     private void analisaChamadaProcedimento() {
