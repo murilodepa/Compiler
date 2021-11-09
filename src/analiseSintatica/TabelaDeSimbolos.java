@@ -106,6 +106,17 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    public String pesquisaGlobalProcedimentoEndereco(String lexema){
+        LinkedList<Simbolo> aux= new LinkedList<>(tabela);
+        while(!aux.isEmpty()){
+            if(aux.peek().getLexema().equals(lexema) && aux.peek().getTipo().equals("procedimento"))
+                return aux.peek().getMemoria();
+            else
+                aux.pop();
+        }
+        return "";
+    }
+
     public boolean pesquisaGlobalFuncao(String lexema){
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
@@ -115,6 +126,17 @@ public class TabelaDeSimbolos {
                 aux.pop();
         }
         return false;
+    }
+
+    public String pesquisaGlobalFuncaoEndereco(String lexema){
+        LinkedList<Simbolo> aux= new LinkedList<>(tabela);
+        while(!aux.isEmpty()){
+            if(aux.peek().getLexema().equals(lexema) && (aux.peek().getTipo().equals("função inteiro") || (aux.peek().getTipo().equals("função boolean") )))
+                return aux.peek().getMemoria();
+            else
+                aux.pop();
+        }
+        return "";
     }
 
     public boolean pesquisaGlobalFuncaoBool(String lexema){
@@ -146,7 +168,7 @@ public class TabelaDeSimbolos {
     public boolean pesquisaGlobalVariavel(String lexema){
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
-            if(aux.peek().getLexema().equals(lexema) && aux.peek().getEscopo().equals(""))
+            if(aux.peek().getLexema().equals(lexema) && tipoVariavel(aux.peek()))
                 return true;
             else
                 aux.pop();
@@ -157,7 +179,7 @@ public class TabelaDeSimbolos {
     public String  pesquisaGlobalVariavelEndereco(String lexema){
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
-            if(aux.peek().getLexema().equals(lexema) && aux.peek().getEscopo().equals(""))
+            if(aux.peek().getLexema().equals(lexema) && tipoVariavel(aux.peek()))
                 return aux.peek().getMemoria();
             else
                 aux.pop();
@@ -166,10 +188,17 @@ public class TabelaDeSimbolos {
     }
 
 
+    public Boolean tipoVariavel(Simbolo token){
+        if(token.getTipo().equals("inteiro") || token.getTipo().equals("booleano") || token.getTipo().equals("variavel"))
+            return true;
+        return false;
+    }
+
+
     public boolean pesquisaGlobalVariavelInt(String lexema){
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
-            if(aux.peek().getLexema().equals(lexema) && aux.peek().getEscopo().equals(""))
+            if(aux.peek().getLexema().equals(lexema) && tipoVariavel(aux.peek()))
                 if(aux.peek().getTipo().equals("inteiro"))
                 return true;
                 else return false;
@@ -182,7 +211,7 @@ public class TabelaDeSimbolos {
     public boolean pesquisaGlobalVariavelBool(String lexema){
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
-            if(aux.peek().getLexema().equals(lexema) && aux.peek().getEscopo().equals(""))
+            if(aux.peek().getLexema().equals(lexema) && tipoVariavel(aux.peek()))
                 if(aux.peek().getTipo().equals("booleano"))
                 return true;
                 else return false;
@@ -237,12 +266,28 @@ public class TabelaDeSimbolos {
     public int desempilhaMarca(){
         int contador=0;
         while(!tabela.isEmpty() && tabela.peek().getEscopo()!="L"){
-            tabela.pop();
+           if(pesquisaGlobalVariavel(tabela.peek().getLexema()))
             contador++;
+            tabela.pop();
+        }
+        tabela.peek().setEscopo("");
+        //tabela.pop();
+        return contador;
+    }
+
+    public int desempilhaTudo(){
+        int contador=0;
+        while(!tabela.isEmpty()){
+            if(pesquisaGlobalVariavel(tabela.peek().getLexema())) {
+                contador++;
+            }
+            tabela.pop();
         }
         //tabela.pop();
         return contador;
     }
+
+
 
     public void alteraTipoTopo(String tipo){
         if(!tabela.isEmpty()){

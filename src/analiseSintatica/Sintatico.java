@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class Sintatico {
@@ -32,6 +33,7 @@ public class Sintatico {
     AnalisadorExpressao analisadorExpressao;
     FileWriter arq;
     PrintWriter gravarArq;
+    int varLocal=0;
 
     public Sintatico() throws Exception {
         lexical = new Lexical();
@@ -42,6 +44,7 @@ public class Sintatico {
         gravarArq = new PrintWriter(arq);
         rotulo=1;
         var=0;
+        varLocal=0;
     }
 
     public void limpar() {
@@ -96,7 +99,9 @@ public class Sintatico {
         } else {
             throw new Exception("ERRO! - Esperado um programa!");
         }
-        gera(completar8(""), completar8("DALLOC"),completar8(String.valueOf(0)), completar8(String.valueOf(var)));
+        int aux=tabelaDeSimbolos.desempilhaTudo();
+        gera(completar8(""), completar8("DALLOC"),completar8(String.valueOf(var-aux)), completar8(String.valueOf(aux)));
+        gera(completar8(""),completar8("DALLOC"),completar8(String.valueOf(0)),completar8(String.valueOf(1)));
         gera(completar8(""),completar8("HLT"),completar8(""),completar8(""));
         arq.close();
 
@@ -124,6 +129,11 @@ public class Sintatico {
             } else {
                 throw new Exception("ERRO! - Esperado um identificador!");
             }
+        }
+        if(varLocal>0) {
+            gera(completar8(""), completar8("ALLOC"), completar8(String.valueOf(var)), completar8(String.valueOf(varLocal)));
+            var += varLocal;
+            varLocal = 0;
         }
     }
 
@@ -164,8 +174,7 @@ public class Sintatico {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
         }  else {
            int contador= tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(),var);
-            gera(completar8(""),completar8("ALLOC"),completar8(String.valueOf(var)),completar8(String.valueOf(contador)));
-            var+=contador;
+           varLocal+=contador;
         }
         i++;
     }
@@ -262,7 +271,7 @@ public class Sintatico {
         }
         int contador=tabelaDeSimbolos.desempilhaMarca();
         if(contador>0) {
-            gera(completar8(""), completar8("DALLOC"),completar8( String.valueOf(var)),completar8( String.valueOf(contador)));
+            gera(completar8(""), completar8("DALLOC"),completar8( String.valueOf(var-contador)),completar8( String.valueOf(contador)));
             var -= contador;
         }
         gera(completar8(""),completar8("RETURN"),completar8(""),completar8(""));
@@ -329,7 +338,13 @@ public class Sintatico {
             if(!tipoRetorno.equals(tabelaDeSimbolos.getTipo(tokens.get(inicio-2).getLexema()))){
                 throw new Exception("Erro ! atribuição de tipos inválidos");
             }
-            gera(completar8(""),completar8("STR"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(inicio-2).getLexema())),completar8(""));
+
+            geraCodigoExpressao(expressao);
+            String aux=tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(inicio-2).getLexema());
+            if(aux.isEmpty())
+                aux=String.valueOf(0);
+
+            gera(completar8(""),completar8("STR"),completar8(aux),completar8(""));
             //seguir
             //analisaAtribuicao();
         } else {
@@ -337,12 +352,14 @@ public class Sintatico {
             if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i-1).getLexema())){
                 throw new Exception("ERRO! - Procedimento não declarado");
             }
+            gera(completar8(""),completar8("CALL"),completar8(tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i-1).getLexema())),completar8(""));
             //i++;
             //chamadaProcedimento();
         }
     }
 
     private void analisaSe() throws Exception {
+        int auxRot1 = rotulo, auxRot2;
         i++;
 
         int inicio=i;
@@ -361,14 +378,22 @@ public class Sintatico {
         if(!tipoRetorno.equals("B")){
             throw new Exception("Erro ! tipo errado para comando SE");
         }
-
+        geraCodigoExpressao(expressao);
 
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
+            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
+            rotulo++;
             i++;
             analisaComandoSimples();
             if (tokens.get(i).getSimbolo().equals(IDs.ssenao.toString())) {
+                auxRot2=rotulo;
+                gera(completar8(""),completar8("JMP"),completar8(String.valueOf(rotulo)),completar8(""));
+                rotulo++;
+                gera(completar8(String.valueOf(auxRot1)),completar8("NULL"),completar8(""),completar8(""));
                 i++;
                 analisaComandoSimples();
+                gera(completar8(String.valueOf(auxRot2)),completar8("NULL"),completar8(""),completar8(""));
+
             }
         } else {
             throw new Exception("ERRO! - Esperado um então!");
@@ -380,11 +405,6 @@ public class Sintatico {
          gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
          rotulo++;
 
-        /*
-GERA
-*/
-
-      //  rotulo = rotulo + 1;
         i++;
         int inicio=i;
         objetoList=new ArrayList<>();
@@ -402,6 +422,7 @@ GERA
         if(!tipoRetorno.equals("B")){
             throw new Exception("Erro ! tipo errado para comando ENQUANTO");
         }
+        geraCodigoExpressao(expressao);
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
             auxRot2 = rotulo;
@@ -423,7 +444,7 @@ GERA
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                     gera(completar8(""),completar8("RD"),completar8(""),completar8(""));
-                    gera(completar8(""),completar8("STR"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
+                    gera(completar8(""),completar8("STR LEIA"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
                     i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
@@ -569,12 +590,62 @@ GERA
     public void gera(String texto, String texto2,String texto3,String texto4){
         gravarArq.println(texto+texto2+texto3+texto4);
     }
+
     private String completar8(String string){
         while (string.length()!=8){
             string+=" ";
         }
         return string;
     }
+
+    private void geraCodigoExpressao(List<Token> expressao)
+    {
+        expressao.forEach(token -> {
+            if(token.getSimbolo().equals(IDs.Sidentificador.toString())){
+                if(tabelaDeSimbolos.pesquisaGlobalVariavel(token.getLexema()))
+                    gera(completar8(""),completar8("LDV"),tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(token.getLexema()),completar8(""));
+                else if(tabelaDeSimbolos.pesquisaGlobalFuncao(token.getLexema())) {
+                    gera(completar8(""),completar8("CALL"),tabelaDeSimbolos.pesquisaGlobalFuncaoEndereco(token.getLexema()),completar8(""));
+                    gera(completar8(""),completar8("LDV"),completar8("0"),completar8(""));
+
+                }
+            } else if(token.getSimbolo().equals(Operadores.NUMERO)){
+                gera(completar8(""),completar8("LDC"),completar8(token.getLexema()),completar8(""));
+            } else if(token.getSimbolo().equals(Operadores.MAIS)){
+                gera(completar8(""),completar8("ADD"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(Operadores.MENOS)){
+                gera(completar8(""),completar8("SUB"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(Operadores.MULTIPLICACAO)){
+                gera(completar8(""),completar8("MULT"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(Operadores.NEGATIVO)){
+                gera(completar8(""),completar8("INV"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Se.toString())){
+                gera(completar8(""),completar8("AND"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Sou.toString())){
+                gera(completar8(""),completar8("OR"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Snao.toString())){
+                gera(completar8(""),completar8("NEG"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Smenor.toString())){
+                gera(completar8(""),completar8("CME"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Smaior.toString())){
+                gera(completar8(""),completar8("CMA"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Sig.toString())){
+                gera(completar8(""),completar8("CEQ"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Sdif.toString())){
+                gera(completar8(""),completar8("CDIF"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Smenorig.toString())){
+                gera(completar8(""),completar8("CMEQ"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(OperadoresRelacional.Smaiorig.toString())){
+                gera(completar8(""),completar8("CMAQ"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Sverdadeiro.toString())){
+                gera(completar8(""),completar8("LDC"),completar8("1"),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Sfalso.toString())) {
+                gera(completar8(""),completar8("LDC"),completar8("0"),completar8(""));
+            }
+        });
+    }
+
+
 /*
     private void analisaChamadaProcedimento() {
 
