@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
 
-public class Main extends Application {
+public class Principal extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
