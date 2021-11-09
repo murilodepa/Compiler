@@ -140,7 +140,7 @@ public class Sintatico {
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (!tabelaDeSimbolos.pesquisarDuplicidade(tokens.get(i).getLexema())) {
+                if (!tabelaDeSimbolos.pesquisarDuplicidade(tokens.get(i).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
                     tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "variavel", "");
                     i++;
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString()) || tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
@@ -212,7 +212,7 @@ public class Sintatico {
         i++;
         String galho="L";
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-            if(!tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema())) {
+            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "procedimento", String.valueOf(rotulo));
                 gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
                 rotulo++;
@@ -241,7 +241,7 @@ public class Sintatico {
         i++;
         String galho="L";
         if(tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())){
-            if(!tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
+            if(!tabelaDeSimbolos.pesquisaGlobal(tokens.get(i).getLexema())) {
                 tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), galho, "", String.valueOf(rotulo));
                 gera(completar8(String.valueOf(rotulo)),completar8("NULL"),completar8(""),completar8(""));
                 rotulo++;
@@ -442,7 +442,7 @@ public class Sintatico {
         if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
+                if (tabelaDeSimbolos.pesquisaGlobalVariavelInt(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                     gera(completar8(""),completar8("RD"),completar8(""),completar8(""));
                     gera(completar8(""),completar8("STR LEIA"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
                     i++;
@@ -468,7 +468,7 @@ public class Sintatico {
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (tabelaDeSimbolos.pesquisaGlobalVariavel(tokens.get(i).getLexema())) {
+                if (tabelaDeSimbolos.pesquisaGlobalVariavelInt(tokens.get(i).getLexema())) {
                     gera(completar8(""),completar8("LDV"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),completar8(""));
                     gera(completar8(""),completar8("PRN"),completar8(""),completar8(""));
                     i++;
