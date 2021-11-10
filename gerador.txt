@@ -1,0 +1,77 @@
+        START                   
+        ALLOC   0       1       
+        ALLOC   1       7       
+        JMP     1               
+2       NULL                    
+        ALLOC   8       3       
+        LDV     9        
+        LDC     1               
+        CMA                     
+        JPMF    3               
+        LDC     0               
+        STR     9               
+        RD                      
+        STR LEIA10      
+4       NULL                    
+        LDV     8        
+        LDC     89              
+        CDIF                    
+        LDV     8        
+        LDC     1000            
+        CMEQ                    
+        AND                     
+        JPMF    5               
+        LDV     9        
+        LDV     10        
+        ADD                     
+        STR     8               
+        JMP     4               
+5       NULL                    
+        LDV     8               
+        PRN                     
+        DALLOC  8       3       
+        RETURN                  
+6       NULL                    
+        RD                      
+        STR LEIA1       
+        LDV     4        
+        LDC     7               
+        LDC     5               
+        MULT                    
+        LDC     30              
+        LDV     5        
+        ADD                     
+        ADD                     
+        LDV     4        
+        LDV     1        
+        MULT                    
+        LDC     2               
+        ADD                     
+        CMEQ                    
+        LDV     6        
+        LDC     0               
+        CMA                     
+        AND                     
+        STR     1               
+        RETURN                  
+1       NULL                    
+        CALL    2               
+        CALL    6               
+        LDV     2        
+        LDV     3        
+        LDV     1        
+        LDV     1        
+        MULT                    
+        ADD                     
+        CMA                     
+        JPMF    7               
+        LDV     2               
+        PRN                     
+        JMP     8               
+7       NULL                    
+        LDV     3               
+        PRN                     
+8       NULL                    
+        DALLOC  1       7       
+        DALLOC  0       1       
+        HLT                     
