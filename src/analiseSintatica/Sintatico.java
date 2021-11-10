@@ -137,6 +137,7 @@ public class Sintatico {
         }
     }
 
+    
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
