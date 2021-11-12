@@ -137,7 +137,7 @@ public class Sintatico {
         }
     }
 
-    
+
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
@@ -343,7 +343,11 @@ public class Sintatico {
             geraCodigoExpressao(expressao);
             String aux=tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(inicio-2).getLexema());
             if(aux.isEmpty())
-                aux=String.valueOf(0);
+                if(tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(inicio-2).getLexema()))
+                    aux=String.valueOf(0);
+                else
+                    throw new Exception("Erro ! Simbolo inválido");
+
 
             gera(completar8(""),completar8("STR"),completar8(aux),completar8(""));
             //seguir
@@ -360,7 +364,7 @@ public class Sintatico {
     }
 
     private void analisaSe() throws Exception {
-        int auxRot1 = rotulo, auxRot2;
+        int auxRot1 = rotulo, auxRot2=rotulo;
         i++;
 
         int inicio=i;
@@ -393,9 +397,8 @@ public class Sintatico {
                 gera(completar8(String.valueOf(auxRot1)),completar8("NULL"),completar8(""),completar8(""));
                 i++;
                 analisaComandoSimples();
-                gera(completar8(String.valueOf(auxRot2)),completar8("NULL"),completar8(""),completar8(""));
-
             }
+            gera(completar8(String.valueOf(auxRot2)),completar8("NULL"),completar8(""),completar8(""));
         } else {
             throw new Exception("ERRO! - Esperado um então!");
         }
@@ -445,7 +448,7 @@ public class Sintatico {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
                 if (tabelaDeSimbolos.pesquisaGlobalVariavelInt(tokens.get(i).getLexema())) { //OBS: pesquisa em toda a tabela
                     gera(completar8(""),completar8("RD"),completar8(""),completar8(""));
-                    gera(completar8(""),completar8("STR LEIA"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
+                    gera(completar8(""),completar8("STR"),completar8(tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(i).getLexema())),String.valueOf(""));
                     i++;
                 if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sfecha_parenteses.toString()))) {
                     i++;
