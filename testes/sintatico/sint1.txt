@@ -1,36 +1,29 @@
 {Teste 1 - OK}
 programa test1;
-
-var a,b,c,x,y,h: inteiro;
-j:booleano;
-
+var a,b,c: inteiro;
 {proc 1}
 procedimento analisa1;
 var a, x,z: inteiro;
 inicio
-  se x>1  entao
-      x:= 0;
-  leia(z);
-  enquanto (a != 89) e (a<= 1000)  {condicao de parada}
-  faca inicio
-           a:= x+z
-       fim;
-  escreva(a)
+se x>1 entao
+x:= 0;
+leia(z);
+enquanto (a != 89) e (a<= 1000)  {condicao de parada}
+faca inicio
+a:= x+a
 fim;
-
-
+escreva(a)
+fim;
 procedimento analisa2;
 inicio
-  leia(a);
-  j:= (x + 7 * 5  div (30+y) <= (x*a+2))e(h>0)
+leia(a);
+b:= -a*a+(c div b)
 fim;
-
 inicio
-    analisa1;
-    analisa2;
-    se b > (c+ a*a)
-    entao escreva(b)
-    senao escreva(c)
+analisa1;
+analisa2;
+se b > (c+ a*a)
+entao escreva(b)
+senao escreva(c)
 fim.
-
 {fim}
