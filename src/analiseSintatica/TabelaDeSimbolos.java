@@ -243,12 +243,13 @@ public class TabelaDeSimbolos {
         LinkedList<Simbolo> aux= new LinkedList<>(tabela);
         while(!aux.isEmpty()){
             Simbolo simbolo = aux.pop();
-            if(simbolo.getLexema().equals(lexema))
-                if(simbolo.getTipo().equals("booleano"))
+            if(simbolo.getLexema().equals(lexema)) {
+                if (simbolo.getTipo().contains("booleano"))
                     return "B";
 
-                if(simbolo.getTipo().equals("inteiro"))
+                if (simbolo.getTipo().contains("inteiro"))
                     return "I";
+            }
         }
         return null;
     }
