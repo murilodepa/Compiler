@@ -390,7 +390,7 @@ public class Sintatico {
         geraCodigoExpressao(expressao);
 
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
-            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
+            gera(completar8(""),completar8("JMPF"),completar8(String.valueOf(rotulo)),completar8(""));
             rotulo++;
             i++;
             analisaComandoSimples();
@@ -434,7 +434,7 @@ public class Sintatico {
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
             auxRot2 = rotulo;
-            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
+            gera(completar8(""),completar8("JMPF"),completar8(String.valueOf(rotulo)),completar8(""));
            rotulo = rotulo + 1;
             i++;
             analisaComandoSimples();

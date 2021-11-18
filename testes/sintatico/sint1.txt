@@ -5,8 +5,9 @@ var a,b,c: inteiro;
 procedimento analisa1;
 var a, x,z: inteiro;
 inicio
+x:= 2;
+a:= 998;
 se x>1 entao
-x:= 0;
 leia(z);
 enquanto (a != 89) e (a<= 1000)  {condicao de parada}
 faca inicio
@@ -17,6 +18,8 @@ fim;
 procedimento analisa2;
 inicio
 leia(a);
+c:=4;
+b:=2;
 b:= -a*a+(c div b)
 fim;
 inicio

@@ -4,15 +4,17 @@
         JMP     1               
 2       NULL                    
         ALLOC   4       3       
+        LDC     2               
+        STR     5               
+        LDC     998             
+        STR     4               
         LDV     5               
         LDC     1               
         CMA                     
-        JPMF    3               
-        LDC     0               
-        STR     5               
-3       NULL                    
+        JMPF    3               
         RD                      
         STR     6               
+3       NULL                    
 4       NULL                    
         LDV     4               
         LDC     89              
@@ -21,7 +23,7 @@
         LDC     1000            
         CMEQ                    
         AND                     
-        JPMF    5               
+        JMPF    5               
         LDV     5               
         LDV     4               
         ADD                     
@@ -35,6 +37,10 @@
 6       NULL                    
         RD                      
         STR     1               
+        LDC     4               
+        STR     3               
+        LDC     2               
+        STR     2               
         LDV     1               
         INV                     
         LDV     1               
@@ -55,7 +61,7 @@
         MULT                    
         ADD                     
         CMA                     
-        JPMF    7               
+        JMPF    7               
         LDV     2               
         PRN                     
         JMP     8               
