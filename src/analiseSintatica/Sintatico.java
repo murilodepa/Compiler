@@ -14,6 +14,7 @@ import Utils.Operadores;
 import analiseLexical.*;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -47,9 +48,10 @@ public class Sintatico {
         varLocal=0;
     }
 
-    public void limpar() {
+    public void limpar() throws IOException {
         rotulo=1;
         var=0;
+        varLocal=0;
         tokens=null;
         i=0;
         lexical.setTokens(new LinkedList<>());
@@ -57,6 +59,8 @@ public class Sintatico {
         lexical.setLinha(1);
         lexical.setColuna(-1);
         tabelaDeSimbolos=new TabelaDeSimbolos();
+        arq = new FileWriter("./gerador.obj");
+        gravarArq = new PrintWriter(arq);
     }
 
     public void run () throws Exception {
@@ -386,7 +390,7 @@ public class Sintatico {
         geraCodigoExpressao(expressao);
 
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
-            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
+            gera(completar8(""),completar8("JMPF"),completar8(String.valueOf(rotulo)),completar8(""));
             rotulo++;
             i++;
             analisaComandoSimples();
@@ -430,7 +434,7 @@ public class Sintatico {
 
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
             auxRot2 = rotulo;
-            gera(completar8(""),completar8("JPMF"),completar8(String.valueOf(rotulo)),completar8(""));
+            gera(completar8(""),completar8("JMPF"),completar8(String.valueOf(rotulo)),completar8(""));
            rotulo = rotulo + 1;
             i++;
             analisaComandoSimples();
@@ -456,7 +460,7 @@ public class Sintatico {
                     throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
                 } else {
-                    throw new Exception("ERRO! - variável não encontrada!");
+                    throw new Exception("ERRO! - variável não encontrada!  11111");
                 }
             } else {
                 throw new Exception("ERRO! - Esperado um identificador!");
@@ -592,7 +596,7 @@ public class Sintatico {
     }
 
     public void gera(String texto, String texto2,String texto3,String texto4){
-        gravarArq.println(texto+texto2+texto3+texto4);
+        gravarArq.println(completar8(texto)+completar8(texto2)+completar8(texto3)+completar8(texto4));
     }
 
     private String completar8(String string){
@@ -621,6 +625,8 @@ public class Sintatico {
                 gera(completar8(""),completar8("SUB"),completar8(""),completar8(""));
             } else if(token.getSimbolo().equals(Operadores.MULTIPLICACAO)){
                 gera(completar8(""),completar8("MULT"),completar8(""),completar8(""));
+            } else if(token.getSimbolo().equals(IDs.Sdiv.toString())){
+                gera(completar8(""),completar8("DIVI"),completar8(""),completar8(""));
             } else if(token.getSimbolo().equals(Operadores.NEGATIVO)){
                 gera(completar8(""),completar8("INV"),completar8(""),completar8(""));
             } else if(token.getSimbolo().equals(IDs.Se.toString())){

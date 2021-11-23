@@ -4,9 +4,21 @@ programa test1;
 
 var a,b,c: inteiro;
 
+funcao analisa1: inteiro;
+var a, x,z: inteiro;
+inicio
+    a:=25;
+    x:=5;
+    z:=1;
+analisa1:= 25+5-1;
+fim;
+
 
 inicio
-   se b > (c+ a*a)
+    b:=5;
+    c:=2;
+    a:=1;
+   se analisa1 > (c+ a*a)
     entao escreva(b)
     senao escreva(c)
 fim.

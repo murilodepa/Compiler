@@ -120,7 +120,6 @@ public class Main extends Application {
         /* Se o usuário selecionar a opção abrir*/
         abrir.setOnAction(actionEvent -> abrirArquivo(fileChooser, primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
 
-        areaTextoCodigo.setOnInputMethodTextChanged(InputMethodEvent -> System.out.println("\n aabbbb"));
     }
 
     /**
