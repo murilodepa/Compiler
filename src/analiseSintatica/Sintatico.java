@@ -59,7 +59,7 @@ public class Sintatico {
         lexical.setLinha(1);
         lexical.setColuna(-1);
         tabelaDeSimbolos=new TabelaDeSimbolos();
-        arq = new FileWriter("./gerador.txt");
+        arq = new FileWriter("./gerador.obj");
         gravarArq = new PrintWriter(arq);
     }
 
