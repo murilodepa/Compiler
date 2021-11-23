@@ -11,6 +11,12 @@ import analiseSintatica.Sintatico;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -19,20 +25,22 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.Objects;
-import java.util.Queue;
 
 public class Main extends Application {
 
+    private final static String GITHUB_LINK = "https://github.com/murilodepa/Compiler";
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
+
         Sintatico sintatico = new Sintatico();
         primaryStage.setTitle("Compilador");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icones/CompilerIcon.png"))));
@@ -85,9 +93,14 @@ public class Main extends Application {
         menuFuncaos.getItems().add(compilar);
         menuFuncaos.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: roboto");
 
+        final Menu menuSobre = new Menu("Sobre");
+        final MenuItem github = new MenuItem("GitHub");
+        menuSobre.getItems().add(github);
+        menuSobre.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: roboto");
+
         /* Definindo Menu Bar com menu arquivos e funções */
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menuArquivo, menuFuncaos);
+        menuBar.getMenus().addAll(menuArquivo, menuFuncaos, menuSobre);
 
         /* Definindo o posicionamento dos itens criados na tela principal */
         final GridPane inputGridPane = new GridPane();
@@ -107,6 +120,9 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
+        /* Se o usuário selecionar a opção abrir*/
+        abrir.setOnAction(actionEvent -> abrirArquivo(fileChooser, primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
+
         /* Se o usuário selecionar a opção compilar */
         compilar.setOnAction(actionEvent -> compilarPrograma(sintatico, alerta, labelMensagem));
 
@@ -117,9 +133,8 @@ public class Main extends Application {
             }
         });
 
-        /* Se o usuário selecionar a opção abrir*/
-        abrir.setOnAction(actionEvent -> abrirArquivo(fileChooser, primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
-
+        /* Se o usuário selecionar a opção GitHub */
+        github.setOnAction(actionEvent -> openGitHub());
     }
 
     /**
@@ -163,6 +178,16 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+
+    public void openGitHub(){
+        try{
+            URI link = new URI(GITHUB_LINK);
+            Desktop.getDesktop().browse(link);
+        }catch(Exception error){
+            System.out.println("Error to open the GitHub link: " + error);
+        }
+    }
+
 
     public static void main(String[] args) {
         launch(args);

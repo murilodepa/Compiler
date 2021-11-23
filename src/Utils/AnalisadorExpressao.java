@@ -3,66 +3,64 @@ package Utils;
 import analiseLexical.IDs;
 import analiseLexical.OperadoresRelacional;
 import analiseLexical.Token;
-import analiseSintatica.Simbolo;
 import analiseSintatica.TabelaDeSimbolos;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class AnalisadorExpressao {
-    LinkedList<Objeto> stack;
 
     public String analisarExpressao(List<Token> posFixa, TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
         LinkedList<Token> stack = new LinkedList<>();
-        for (int i = 0; i < posFixa.size(); i++) {
-            if (posFixa.get(i).getSimbolo().equals(IDs.Sidentificador.toString()) || posFixa.get(i).getSimbolo().equals(Operadores.NUMERO) ||
-                    posFixa.get(i).getSimbolo().equals(IDs.Sverdadeiro.toString()) || posFixa.get(i).getSimbolo().equals(IDs.Sfalso.toString())) {
-                stack.push(posFixa.get(i));
+        for (Token value : posFixa) {
+            if (value.getSimbolo().equals(IDs.Sidentificador.toString()) || value.getSimbolo().equals(Operadores.NUMERO) ||
+                    value.getSimbolo().equals(IDs.Sverdadeiro.toString()) || value.getSimbolo().equals(IDs.Sfalso.toString())) {
+                stack.push(value);
             }
-            if (posFixa.get(i).getSimbolo().equals(Operadores.MAIS) ||
-                    posFixa.get(i).getSimbolo().equals(Operadores.MENOS) ||
-                    posFixa.get(i).getSimbolo().equals(Operadores.MULTIPLICACAO) ||
-                    posFixa.get(i).getSimbolo().equals(IDs.Sdiv.toString())) {
+            if (value.getSimbolo().equals(Operadores.MAIS) ||
+                    value.getSimbolo().equals(Operadores.MENOS) ||
+                    value.getSimbolo().equals(Operadores.MULTIPLICACAO) ||
+                    value.getSimbolo().equals(IDs.Sdiv.toString())) {
                 for (int j = 0; j < 2; j++) {
                     Token token = stack.pop();
-                    validarInteiro(token,tabelaDeSimbolos);
+                    validarInteiro(token, tabelaDeSimbolos);
                 }
-                stack.push(new Token("I",Operadores.NUMERO));
+                stack.push(new Token("I", Operadores.NUMERO));
             }
 
-            if(posFixa.get(i).getSimbolo().equals(Operadores.POSITIVO) ||
-                    posFixa.get(i).getSimbolo().equals(Operadores.NEGATIVO)) {
+            if (value.getSimbolo().equals(Operadores.POSITIVO) ||
+                    value.getSimbolo().equals(Operadores.NEGATIVO)) {
                 Token token = stack.pop();
-                validarInteiro(token,tabelaDeSimbolos);
-                stack.push(new Token("I",Operadores.NUMERO));
+                validarInteiro(token, tabelaDeSimbolos);
+                stack.push(new Token("I", Operadores.NUMERO));
             }
 
-            if(posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Smaiorig.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Sig.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Smenor.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Smenorig.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(OperadoresRelacional.Sdif.toString())) {
+            if (value.getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
+                    value.getSimbolo().equals(OperadoresRelacional.Smaiorig.toString()) ||
+                    value.getSimbolo().equals(OperadoresRelacional.Sig.toString()) ||
+                    value.getSimbolo().equals(OperadoresRelacional.Smenor.toString()) ||
+                    value.getSimbolo().equals(OperadoresRelacional.Smenorig.toString()) ||
+                    value.getSimbolo().equals(OperadoresRelacional.Sdif.toString())) {
                 for (int j = 0; j < 2; j++) {
                     Token token = stack.pop();
-                    validarInteiro(token,tabelaDeSimbolos);
+                    validarInteiro(token, tabelaDeSimbolos);
                 }
-                stack.push(new Token("B",IDs.Sverdadeiro.toString()));
+                stack.push(new Token("B", IDs.Sverdadeiro.toString()));
             }
 
-            if(posFixa.get(i).getSimbolo().equals(IDs.Sou.toString()) ||
-                    posFixa.get(i).getSimbolo().equals(IDs.Se.toString())) {
+            if (value.getSimbolo().equals(IDs.Sou.toString()) ||
+                    value.getSimbolo().equals(IDs.Se.toString())) {
                 for (int j = 0; j < 2; j++) {
                     Token token = stack.pop();
-                    validarBooleano(token,tabelaDeSimbolos);
+                    validarBooleano(token, tabelaDeSimbolos);
                 }
-                stack.push(new Token("B",IDs.Sverdadeiro.toString()));
+                stack.push(new Token("B", IDs.Sverdadeiro.toString()));
             }
 
-            if(posFixa.get(i).getSimbolo().equals(IDs.Snao.toString())) {
+            if (value.getSimbolo().equals(IDs.Snao.toString())) {
                 Token token = stack.pop();
-                validarBooleano(token,tabelaDeSimbolos);
-                stack.push(new Token("B",IDs.Sverdadeiro.toString()));
+                validarBooleano(token, tabelaDeSimbolos);
+                stack.push(new Token("B", IDs.Sverdadeiro.toString()));
             }
         }
         Token retorno = stack.pop();
