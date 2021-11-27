@@ -1,25 +1,32 @@
-programa final;
-var opcao,x,y:inteiro;
-  procedimento numeros;
-  var x,y,total: inteiro;
- 
-    procedimento dobro;
-    var media: inteiro;
-    inicio
-      media:=(x+y)*2;
-      escreva(media)
-    fim;
-  inicio
-   leia(x);
-   leia(y);
-   total:= x+y;
-   escreva(total); 
-   dobro           
-  fim;
- 
+{Teste 1 - OK}
+programa test1;
+var a,b,c: inteiro;
+{proc 1}
+procedimento analisa1;
+var a, x,z: inteiro;
 inicio
-  leia(opcao);
-  se opcao = 1
-  entao numeros
-  senao escreva(opcao)
+x:= 2;
+a:= 998;
+se x>1 entao
+leia(z);
+enquanto (a != 89) e (a<= 1000)  {condicao de parada}
+faca inicio
+a:= x+a
+fim;
+escreva(a)
+fim;
+procedimento analisa2;
+inicio
+leia(a);
+c:=4;
+b:=2;
+b:= -a*a+(c div b)
+fim;
+inicio
+analisa1;
+analisa2;
+se b > (c+ a*a)
+entao escreva(b)
+senao escreva(c)
 fim.
+{fim}

@@ -9,7 +9,7 @@ package analiseSintatica;
 
 public class Simbolo {
 
-    private String lexema;
+    private final String lexema;
     private String escopo;
     private String tipo;
     private String memoria;
@@ -35,10 +35,6 @@ public class Simbolo {
 
     public String getMemoria() {
         return memoria;
-    }
-
-    public void setLexema(String lexema) {
-        this.lexema = lexema;
     }
 
     public void setEscopo(String escopo) {
