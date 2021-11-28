@@ -351,10 +351,10 @@ public class Sintatico {
 
             gera(completar8(""), completar8("STR"), completar8(aux), completar8(""));
         } else {
-            if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i - 1).getLexema())) {
+            if (!tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i - 1).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i - 1).getLexema())) {
                 throw new Exception("ERRO! - Procedimento não declarado");
             }
-            gera(completar8(""), completar8("CALL"), completar8(tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema())), completar8(""));
+            gera(completar8(""), completar8("CALL"), completar8(!tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema()).equals("")?tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema()):tabelaDeSimbolos.pesquisaGlobalFuncaoEndereco(tokens.get(i - 1).getLexema())), completar8(""));
         }
     }
 
@@ -476,7 +476,7 @@ public class Sintatico {
                         throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
                 } else {
-                    throw new Exception("ERRO! - variável não encontrada tchum");
+                    throw new Exception("ERRO! - variável não encontrada");
                 }
             } else {
                 throw new Exception("ERRO! - Esperado um Identificador!");
