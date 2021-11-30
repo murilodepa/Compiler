@@ -5,13 +5,18 @@
  * All rights reserved.
  */
 
+/*
+ * Responsável pela tabela de símbolo do programa, que analisa os procedimentos, funções e variáveis locais e
+ * globais, analisando duplicidade, escopo e identificadores, inserindo tipo e altera "uma marca" para identificar o escopo.
+ */
+
 package analiseSintatica;
 
 import java.util.*;
 
 public class TabelaDeSimbolos {
 
-    LinkedList<Simbolo> tabela;
+    private final LinkedList<Simbolo> tabela;
 
     public TabelaDeSimbolos() {
         tabela = new LinkedList<>();
@@ -57,7 +62,7 @@ public class TabelaDeSimbolos {
         while (!aux.isEmpty()) {
             Simbolo simbolo = aux.pop();
             simbolo.setTipo(tipo);
-            simbolo.setMemoria(String.valueOf(endereco + contador+varLocal));
+            simbolo.setMemoria(String.valueOf(endereco + contador + varLocal));
             tabela.push(simbolo);
             contador++;
         }
@@ -77,11 +82,11 @@ public class TabelaDeSimbolos {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
             if (aux.peek().getLexema().equals(lexema) && Objects.requireNonNull(aux.peek()).getTipo().equals("procedimento"))
-                return true;
+                return false;
             else
                 aux.pop();
         }
-        return false;
+        return true;
     }
 
     public String pesquisaGlobalProcedimentoEndereco(String lexema) {
@@ -161,11 +166,9 @@ public class TabelaDeSimbolos {
         return "";
     }
 
-
     public Boolean tipoVariavel(Simbolo token) {
         return token.getTipo().equals("inteiro") || token.getTipo().equals("booleano") || token.getTipo().equals("variavel");
     }
-
 
     public boolean pesquisaGlobalVariavelInt(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
@@ -242,7 +245,6 @@ public class TabelaDeSimbolos {
             }
             tabela.pop();
         }
-        //tabela.pop();
         return contador;
     }
 

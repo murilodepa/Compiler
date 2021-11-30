@@ -5,14 +5,20 @@
  * All rights reserved.
  */
 
+/*
+ * Classe que contém o analisador Lexical do compilador, sendo o primeiro ciclo de teste que o programa tenta encontrar
+ * algum erro lexical.
+ */
+
 package analiseLexical;
 
 import Utils.Caracteres;
 import Utils.Operadores;
+
 import java.util.LinkedList;
 
 public class Lexical {
-    LinkedList<Token> tokens;
+    private LinkedList<Token> tokens;
     private char[] arquivo;
     private int i;
     private int linha;
@@ -61,7 +67,6 @@ public class Lexical {
         while (i < arquivo.length) {
             while (i < arquivo.length && (arquivo[i] == Caracteres.ABRE_CHAVES || Character.isWhitespace(arquivo[i]))) {
                 // Ignora os comentários
-
                 if (arquivo[i] == Caracteres.ABRE_CHAVES) {
                     linhaChave = linha;
                     colunaChave = i - coluna;

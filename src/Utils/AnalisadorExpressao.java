@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2021 created by Computer Engineering students (Cesar Marrote Manzano,
+ * Christopher de Oliveira Souza and Murilo de Paula Araujo) at PUC-Campinas.
+ *
+ * All rights reserved.
+ */
+
+/*
+ * Responsável por analisar as expressões, validação de variável inteiro, booleano e o tipo do retorno.
+ */
+
 package Utils;
 
 import analiseLexical.IDs;
@@ -9,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AnalisadorExpressao {
-
     public String analisarExpressao(List<Token> posFixa, TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
         LinkedList<Token> stack = new LinkedList<>();
         for (Token value : posFixa) {
@@ -64,12 +74,11 @@ public class AnalisadorExpressao {
             }
         }
         Token retorno = stack.pop();
-        return tipoRetorno(retorno,tabelaDeSimbolos);
+        return tipoRetorno(retorno, tabelaDeSimbolos);
     }
 
-
-    private void validarInteiro(Token token,TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
-        if(token.getSimbolo().equals(IDs.Sidentificador.toString()) ||  token.getSimbolo().equals(Operadores.NUMERO)) {
+    private void validarInteiro(Token token, TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
+        if (token.getSimbolo().equals(IDs.Sidentificador.toString()) || token.getSimbolo().equals(Operadores.NUMERO)) {
             if (token.getSimbolo().equals(IDs.Sidentificador.toString())) {
                 if (!tabelaDeSimbolos.pesquisaGlobalVariavelFuncInt(token.getLexema())) {
                     throw new Exception("Erro! variável não encontrada ou tipo errado");
@@ -80,7 +89,7 @@ public class AnalisadorExpressao {
         }
     }
 
-    private void validarBooleano(Token token,TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
+    private void validarBooleano(Token token, TabelaDeSimbolos tabelaDeSimbolos) throws Exception {
         if (token.getSimbolo().equals(IDs.Sidentificador.toString()) || token.getSimbolo().equals(IDs.Sverdadeiro.toString()) ||
                 token.getSimbolo().equals(IDs.Sfalso.toString())) {
             if (token.getSimbolo().equals(IDs.Sidentificador.toString())) {
@@ -93,19 +102,18 @@ public class AnalisadorExpressao {
         }
     }
 
-    private String tipoRetorno(Token token,TabelaDeSimbolos tabelaDeSimbolos) {
-        if(token.getSimbolo().equals(IDs.Sverdadeiro.toString()) ||
+    private String tipoRetorno(Token token, TabelaDeSimbolos tabelaDeSimbolos) {
+        if (token.getSimbolo().equals(IDs.Sverdadeiro.toString()) ||
                 token.getSimbolo().equals(IDs.Sfalso.toString())) {
             return "B";
-        } else if(token.getSimbolo().equals(Operadores.NUMERO)){
+        } else if (token.getSimbolo().equals(Operadores.NUMERO)) {
             return "I";
         } else {
-            if(tabelaDeSimbolos.pesquisaGlobalVariavelFuncInt(token.getLexema())){
+            if (tabelaDeSimbolos.pesquisaGlobalVariavelFuncInt(token.getLexema())) {
                 return "I";
             } else {
                 return "B";
             }
         }
     }
-
 }

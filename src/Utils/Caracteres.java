@@ -5,6 +5,10 @@
  * All rights reserved.
  */
 
+/*
+ * Classe que contém as constantes dos caracteres utilizados no analisador lexical.
+ */
+
 package Utils;
 
 public class Caracteres {

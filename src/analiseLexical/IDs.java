@@ -5,6 +5,11 @@
  * All rights reserved.
  */
 
+/*
+ * Responsável por conter enum dos "IDs" utilizado no Lexical, e também responsável por retornar qual o id ou
+ * símbolo em relação ao lexema de entrada na chamada do método "pegaSimboloDoId".
+ */
+
 package analiseLexical;
 
 import java.util.HashMap;
@@ -34,8 +39,7 @@ public enum IDs {
     Snao("nao"),
     Sidentificador("identificador");
 
-    final private String lexema;
-
+    private final String lexema;
     private static final Map<String, IDs> simboloPorLexema = new HashMap<>();
 
     static {
@@ -52,7 +56,7 @@ public enum IDs {
         return lexema;
     }
 
-    public static String pegaSimboloDoId (String lexama) {
-        return simboloPorLexema.getOrDefault(lexama, Sidentificador).toString();
+    public static String pegaSimboloDoId(String lexema) {
+        return simboloPorLexema.getOrDefault(lexema, Sidentificador).toString();
     }
 }

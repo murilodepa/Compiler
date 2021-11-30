@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2021 created by Computer Engineering students (Cesar Marrote Manzano,
+ * Christopher de Oliveira Souza and Murilo de Paula Araujo) at PUC-Campinas.
+ *
+ * All rights reserved.
+ */
+
+/*
+ * Responsável por realizar a conversão de uma expressão no formato in-fixa para pós-fixa utilizando pilha.
+ */
+
 package Utils;
 
 import analiseLexical.IDs;
@@ -11,13 +22,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Conversor {
-
     List<Token> posFixa;
 
-    public List<Token> converterPosFixa(List<Token> expressao)
-    {
+    public List<Token> converterPosFixa(List<Token> expressao) {
         int prioridade;
-        posFixa= new ArrayList<>();
+        posFixa = new ArrayList<>();
         LinkedList<Token> stack = new LinkedList<>();
         for (Token token : expressao) {
             if (token.getSimbolo().equals(IDs.Sidentificador.toString()) || token.getSimbolo().equals(Operadores.NUMERO) ||
@@ -58,35 +67,35 @@ public class Conversor {
             }
 
         }
-        while(!stack.isEmpty()){
+        while (!stack.isEmpty()) {
             posFixa.add(stack.pop());
         }
         return posFixa;
     }
 
-    private int prioridade(Token token){
+    private int prioridade(Token token) {
 
         if (token.getSimbolo().equals(Operadores.MAIS) ||
                 token.getSimbolo().equals(Operadores.MENOS)) {
             return 5;
-        } else if(token.getSimbolo().equals(Operadores.MULTIPLICACAO) ||
+        } else if (token.getSimbolo().equals(Operadores.MULTIPLICACAO) ||
                 token.getSimbolo().equals(IDs.Sdiv.toString())) {
             return 6;
-        }else if(token.getSimbolo().equals(Operadores.POSITIVO) ||
+        } else if (token.getSimbolo().equals(Operadores.POSITIVO) ||
                 token.getSimbolo().equals(Operadores.NEGATIVO)) {
             return 7;
-        }else if(token.getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
+        } else if (token.getSimbolo().equals(OperadoresRelacional.Smaior.toString()) ||
                 token.getSimbolo().equals(OperadoresRelacional.Smaiorig.toString()) ||
                 token.getSimbolo().equals(OperadoresRelacional.Sig.toString()) ||
                 token.getSimbolo().equals(OperadoresRelacional.Smenor.toString()) ||
                 token.getSimbolo().equals(OperadoresRelacional.Smenorig.toString()) ||
                 token.getSimbolo().equals(OperadoresRelacional.Sdif.toString())) {
-           return 4;
-       }else if( token.getSimbolo().equals(IDs.Snao.toString())) {
-           return 3;
-       } else if(token.getSimbolo().equals(IDs.Se.toString())){
+            return 4;
+        } else if (token.getSimbolo().equals(IDs.Snao.toString())) {
+            return 3;
+        } else if (token.getSimbolo().equals(IDs.Se.toString())) {
             return 2;
-        } else if(token.getSimbolo().equals(IDs.Sou.toString())) {
+        } else if (token.getSimbolo().equals(IDs.Sou.toString())) {
             return 1;
 
         } else {

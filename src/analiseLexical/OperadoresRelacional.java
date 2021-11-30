@@ -5,6 +5,11 @@
  * All rights reserved.
  */
 
+/*
+ * Responsável por conter enum dos "Operadores Relacional" utilizado no Lexical, e também responsável por retornar
+ * qual o Operadores Relacional ou símbolo em relação ao lexema de entrada na chamada do método "pegaSimboloDoOperador()".
+ */
+
 package analiseLexical;
 
 import java.util.HashMap;
@@ -18,8 +23,7 @@ public enum OperadoresRelacional {
     Smenorig("<="),
     Sdif("!=");
 
-    final private String lexema;
-
+    private final String lexema;
     private static final Map<String, OperadoresRelacional> operadorPorLexema = new HashMap<>();
 
     static {

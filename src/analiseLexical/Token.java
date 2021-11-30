@@ -5,13 +5,15 @@
  * All rights reserved.
  */
 
+/*
+ * Responsável para a criação da lista ligada que conterá os campos lexema e símbolo em cada posição.
+ */
+
 package analiseLexical;
 
 public class Token {
-
-    private  String lexema;
-    private  String simbolo;
-
+    private String lexema;
+    private String simbolo;
 
     public Token(String lexema, String simbolo) {
         this.lexema = lexema;
@@ -33,5 +35,4 @@ public class Token {
     public void setSimbolo(String simbolo) {
         this.simbolo = simbolo;
     }
-
 }

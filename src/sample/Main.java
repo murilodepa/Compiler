@@ -5,6 +5,11 @@
  * All rights reserved.
  */
 
+/*
+ * Classe Main do projeto, responsável pela criação da interface e realizar a interação da interface com toda a lógica
+ * de programação do compilador. E também realizar a abertura do arquivo e acesso do github que contém o projeto.
+ */
+
 package sample;
 
 import analiseSintatica.Sintatico;
@@ -137,9 +142,6 @@ public class Main extends Application {
         github.setOnAction(actionEvent -> openGitHub());
     }
 
-    /**
-     * Método responsável por realizar a validação e compilação do código de entrada
-     */
     public void compilarPrograma(Sintatico sintatico, Alert alerta, Label labelMensagem) {
         try {
             try {
@@ -147,7 +149,7 @@ public class Main extends Application {
                     alerta.show();
                 } else {
                     sintatico.limpar();
-                    sintatico.run();
+                    sintatico.executar();
                     labelMensagem.setTextFill(Color.GREEN);
                     labelMensagem.setText("Sucesso!");
                 }
@@ -160,9 +162,6 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * Método responsável por abrir o arquivo
-     */
     public void abrirArquivo(FileChooser fileChooser, Stage primaryStage, TextField areaTextoCaminhoArquivo, Sintatico sintatico, TextArea areaTextoCodigo) {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         try {
@@ -179,18 +178,16 @@ public class Main extends Application {
         }
     }
 
-    public void openGitHub(){
-        try{
+    public void openGitHub() {
+        try {
             URI link = new URI(GITHUB_LINK);
             Desktop.getDesktop().browse(link);
-        }catch(Exception error){
+        } catch (Exception error) {
             System.out.println("Error to open the GitHub link: " + error);
         }
     }
 
-
     public static void main(String[] args) {
         launch(args);
-        //Queue<Integer>
     }
 }

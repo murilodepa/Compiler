@@ -5,21 +5,24 @@
  * All rights reserved.
  */
 
+/*
+ * Responsável por conter enum das "Pontuações" utilizado no Lexical, e também responsável por retornar
+ * qual a Pontuação ou símbolo em relação ao lexema de entrada na chamada do método "pegaSimboloDaPontuacao()".
+ */
+
 package analiseLexical;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum Pontuacoes {
-
     sponto_virgula(";"),
     Svirgula(","),
     sabre_parenteses("("),
     sfecha_parenteses(")"),
     Sponto(".");
 
-    final private String lexema;
-
+    private final String lexema;
     private static final Map<String, Pontuacoes> pontuacaoPorLexema = new HashMap<>();
 
     static {
