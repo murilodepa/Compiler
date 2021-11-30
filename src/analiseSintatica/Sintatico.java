@@ -5,6 +5,10 @@
  * All rights reserved.
  */
 
+/**
+ * Classe que contém o analisador sintático e semântico do compilador, e também, o processo de geração de código. Sendo
+ * o segundo e terceiro ciclo de teste que o programa tenta encontrar algum erro sintático ou semântico.
+ */
 package analiseSintatica;
 
 import Utils.AnalisadorExpressao;
@@ -21,19 +25,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Sintatico {
-    LinkedList<Token> tokens;
-    public int rotulo;
-    public int var;
-    private int i = 0;
+    private LinkedList<Token> tokens;
+    private int rotulo;
+    private int var, varLocal, i = 0;
     private TabelaDeSimbolos tabelaDeSimbolos;
-    Lexical lexical;
+    private final Lexical lexical;
     private List<Objeto> objetoList;
-    Conversor conversor;
-    AnalisadorExpressao analisadorExpressao;
-    FileWriter arq;
-    PrintWriter gravarArq;
-    int varLocal;
+    private final Conversor conversor;
+    private final AnalisadorExpressao analisadorExpressao;
+    private FileWriter arq;
+    private PrintWriter gravarArq;
 
+    /**
+     * Construtor da classe sintático que instância as variáveis para a análise sintática.
+     *
+     * @throws Exception
+     */
     public Sintatico() throws Exception {
         lexical = new Lexical();
         tabelaDeSimbolos = new TabelaDeSimbolos();
@@ -46,6 +53,12 @@ public class Sintatico {
         varLocal = 0;
     }
 
+    /**
+     * Responsável por "resetar" todas as variáveis utilizadas caso o programa for compilado novamente sem ser fechado e
+     * executado novamente o programa do compilador.
+     *
+     * @throws IOException
+     */
     public void limpar() throws IOException {
         rotulo = 1;
         var = 0;
@@ -61,19 +74,27 @@ public class Sintatico {
         gravarArq = new PrintWriter(arq);
     }
 
-    public void run() throws Exception {
+    /**
+     * Realiza a execução do analisador sintático, semântico e a geração do código.
+     *
+     * @throws Exception
+     */
+    public void executar() throws Exception {
         lexical.analisadorLexical();
         tokens = lexical.getTokens();
         for (Token token : tokens) {
             System.out.print(token.getLexema() + " -> ");
             System.out.println(token.getSimbolo());
         }
-
         analisadorSintatico();
     }
 
+    /**
+     * Realiza a análise sintática do compilador, onde começa o trecho de código do arquivo por um "START".
+     *
+     * @throws Exception
+     */
     public void analisadorSintatico() throws Exception {
-        // rotulo = 1;
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
             gera(completar8(""), completar8("START"), completar8(""), completar8(""));
             gera(completar8(""), completar8("ALLOC"), completar8(String.valueOf(var)), completar8(String.valueOf(++var)));
@@ -106,9 +127,14 @@ public class Sintatico {
         gera(completar8(""), completar8("DALLOC"), completar8(String.valueOf(0)), completar8(String.valueOf(1)));
         gera(completar8(""), completar8("HLT"), completar8(""), completar8(""));
         arq.close();
-
     }
 
+    /**
+     * Método responsável por analisar um bloco, caminhando com o índice que percorre o arquivo e depois chamando os
+     * métodos "analisaEtVariaveis()", "analisaSubrotinas()" e "analisaComandos()" respectivamente.
+     *
+     * @throws Exception
+     */
     public void analisaBloco() throws Exception {
         i++;
         analisaEtVariaveis();
@@ -139,11 +165,10 @@ public class Sintatico {
         }
     }
 
-
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
-                if (!tabelaDeSimbolos.pesquisarDuplicidade(tokens.get(i).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
+                if (!tabelaDeSimbolos.pesquisarDuplicidade(tokens.get(i).getLexema()) && tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i).getLexema())) {
                     tabelaDeSimbolos.insereTabela(tokens.get(i).getLexema(), "", "variavel", "");
                     i++;
                     if (tokens.get(i).getSimbolo().equals(Pontuacoes.Svirgula.toString()) || tokens.get(i).getSimbolo().equals(Operadores.DOIS_PONTOS)) {
@@ -172,7 +197,7 @@ public class Sintatico {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
         } else {
-            int contador = tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(), var);
+            int contador = tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(), var, varLocal);
             varLocal += contador;
         }
         i++;
@@ -181,28 +206,24 @@ public class Sintatico {
     public void analisaSubrotinas() throws Exception {
         Integer auxRot = null;
         int flag = 0;
-
         if (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             auxRot = rotulo;
             gera(completar8(""), completar8("JMP"), completar8(String.valueOf(rotulo)), completar8(""));
             rotulo++;
             flag = 1;
         }
-
         while (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString()) || tokens.get(i).getSimbolo().equals(IDs.sfuncao.toString())) {
             if (tokens.get(i).getSimbolo().equals(IDs.sprocedimento.toString())) {
                 analisaDeclaracaoProcedimento();
             } else {
                 analisaDeclaracaoFuncao();
             }
-
             if (tokens.get(i).getSimbolo().equals(Pontuacoes.sponto_virgula.toString())) {
                 i++;
             } else {
                 throw new Exception("ERRO! - Esperado um ponto e vírgula ';'!");
             }
         }
-
         if (flag == 1) {
             gera(completar8(String.valueOf(auxRot)), completar8("NULL"), completar8(""), completar8(""));
         }
@@ -234,7 +255,7 @@ public class Sintatico {
             var -= contador;
         }
         gera(completar8(""), completar8("RETURN"), completar8(""), completar8(""));
-        // Demsempilha ou Volta Nível
+        // Desempilha ou volta nível
     }
 
     private void analisaDeclaracaoFuncao() throws Exception {
@@ -318,7 +339,6 @@ public class Sintatico {
         }
     }
 
-
     private void analisaAtribuicaoChamadaProcedimento() throws Exception {
         i++;
         if (tokens.get(i).getSimbolo().equals(Operadores.ATRIBUICAO)) {
@@ -333,13 +353,11 @@ public class Sintatico {
                 expressao.get(objeto.getPosicao() - inicio).setLexema(objeto.getValor());
                 expressao.get(objeto.getPosicao() - inicio).setSimbolo(objeto.getSimbolo());
             }
-
             expressao = conversor.converterPosFixa(expressao);
             tipoRetorno = analisadorExpressao.analisarExpressao(expressao, tabelaDeSimbolos);
             if (!tipoRetorno.equals(tabelaDeSimbolos.getTipo(tokens.get(inicio - 2).getLexema()))) {
                 throw new Exception("Erro ! atribuição de tipos inválidos");
             }
-
             geraCodigoExpressao(expressao);
             String aux = tabelaDeSimbolos.pesquisaGlobalVariavelEndereco(tokens.get(inicio - 2).getLexema());
             if (aux.isEmpty())
@@ -348,13 +366,12 @@ public class Sintatico {
                 else
                     throw new Exception("Erro ! Simbolo inválido");
 
-
             gera(completar8(""), completar8("STR"), completar8(aux), completar8(""));
         } else {
-            if (tabelaDeSimbolos.pesquisaGlobal(tokens.get(i - 1).getLexema())) {
+            if (tabelaDeSimbolos.pesquisaGlobalProcedimento(tokens.get(i - 1).getLexema()) && !tabelaDeSimbolos.pesquisaGlobalFuncao(tokens.get(i - 1).getLexema())) {
                 throw new Exception("ERRO! - Procedimento não declarado");
             }
-            gera(completar8(""), completar8("CALL"), completar8(tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema())), completar8(""));
+            gera(completar8(""), completar8("CALL"), completar8(!tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema()).equals("") ? tabelaDeSimbolos.pesquisaGlobalProcedimentoEndereco(tokens.get(i - 1).getLexema()) : tabelaDeSimbolos.pesquisaGlobalFuncaoEndereco(tokens.get(i - 1).getLexema())), completar8(""));
         }
     }
 
@@ -371,14 +388,12 @@ public class Sintatico {
             expressao.get(objeto.getPosicao() - inicio).setLexema(objeto.getValor());
             expressao.get(objeto.getPosicao() - inicio).setSimbolo(objeto.getSimbolo());
         }
-
         expressao = conversor.converterPosFixa(expressao);
         tipoRetorno = analisadorExpressao.analisarExpressao(expressao, tabelaDeSimbolos);
         if (!tipoRetorno.equals("B")) {
             throw new Exception("Erro ! tipo errado para comando SE");
         }
         geraCodigoExpressao(expressao);
-
         if (tokens.get(i).getSimbolo().equals(IDs.sentao.toString())) {
             gera(completar8(""), completar8("JMPF"), completar8(String.valueOf(rotulo)), completar8(""));
             rotulo++;
@@ -402,7 +417,6 @@ public class Sintatico {
         int auxRot1 = rotulo, auxRot2;
         gera(completar8(String.valueOf(rotulo)), completar8("NULL"), completar8(""), completar8(""));
         rotulo++;
-
         i++;
         int inicio = i;
         objetoList = new ArrayList<>();
@@ -414,14 +428,12 @@ public class Sintatico {
             expressao.get(objeto.getPosicao() - inicio).setLexema(objeto.getValor());
             expressao.get(objeto.getPosicao() - inicio).setSimbolo(objeto.getSimbolo());
         }
-
         expressao = conversor.converterPosFixa(expressao);
         tipoRetorno = analisadorExpressao.analisarExpressao(expressao, tabelaDeSimbolos);
         if (!tipoRetorno.equals("B")) {
             throw new Exception("Erro ! tipo errado para comando ENQUANTO");
         }
         geraCodigoExpressao(expressao);
-
         if (tokens.get(i).getSimbolo().equals(IDs.sfaca.toString())) {
             auxRot2 = rotulo;
             gera(completar8(""), completar8("JMPF"), completar8(String.valueOf(rotulo)), completar8(""));
@@ -462,7 +474,6 @@ public class Sintatico {
 
     private void analisaEscreva() throws Exception {
         i++;
-
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
             i++;
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
@@ -476,7 +487,7 @@ public class Sintatico {
                         throw new Exception("ERRO! - Esperado um fecha parenteses ')'!");
                     }
                 } else {
-                    throw new Exception("ERRO! - variável não encontrada tchum");
+                    throw new Exception("ERRO! - variável não encontrada");
                 }
             } else {
                 throw new Exception("ERRO! - Esperado um Identificador!");
@@ -487,9 +498,7 @@ public class Sintatico {
     }
 
     private void analisaExpressao() throws Exception {
-
         analisaExpressaoSimples();
-
         String simbolo = tokens.get(i).getSimbolo();
         if (simbolo.equals(OperadoresRelacional.Smaior.toString()) ||
                 simbolo.equals(OperadoresRelacional.Smaiorig.toString()) ||

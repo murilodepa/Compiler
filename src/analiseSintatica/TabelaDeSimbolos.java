@@ -5,36 +5,33 @@
  * All rights reserved.
  */
 
+/**
+ * Responsável pela tabela de símbolo do programa, que analisa os procedimentos, funções e variáveis locais e
+ * globais, analisando duplicidade, escopo e identificadores, inserindo tipo e altera "uma marca" para identificar o escopo.
+ */
+
+/** Verificar escopo                          ** Verificar identificadores
+  * - programa - sprograma                     *  - var - svar
+  * - início - sinicio                         * - inteiro - sinteiro
+  * - procedimento - sprocedimento             * - booleano - Sbooleano
+  * - funcao - sfuncao                         * - identificador - Sidentificador
+  * - se - sse                                 * - número - Snumero
+  * - entao - sentao
+  * - senao - ssenao
+  * - enquanto - senquanto
+ */
+
 package analiseSintatica;
 
 import java.util.*;
 
 public class TabelaDeSimbolos {
 
-    LinkedList<Simbolo> tabela;
+    private final LinkedList<Simbolo> tabela;
 
     public TabelaDeSimbolos() {
         tabela = new LinkedList<>();
     }
-
-    /* Verificar escopo
-     * programa - sprograma
-     * início - sinicio
-     * procedimento - sprocedimento
-     * funcao - sfuncao
-     * se - sse
-     * entao - sentao
-     * senao - ssenao
-     * enquanto - senquanto
-     */
-
-    /* Verificar identificadores
-     * var - svar
-     * inteiro - sinteiro
-     * booleano - Sbooleano
-     * identificador - Sidentificador
-     * número - Snumero
-     */
 
     public void insereTabela(String lexema, String escopo, String tipo, String memoria) {
         tabela.push(new Simbolo(lexema, escopo, tipo, memoria));
@@ -50,14 +47,14 @@ public class TabelaDeSimbolos {
         return false;
     }
 
-    public int colocaTipo(String tipo, int endereco) {
+    public int colocaTipo(String tipo, int endereco, int varLocal) {
         int contador = 0;
         LinkedList<Simbolo> aux = new LinkedList<>();
         while (!tabela.isEmpty() && tabela.peek().getTipo().contains("variavel")) aux.push(tabela.pop());
         while (!aux.isEmpty()) {
             Simbolo simbolo = aux.pop();
             simbolo.setTipo(tipo);
-            simbolo.setMemoria(String.valueOf(endereco + contador));
+            simbolo.setMemoria(String.valueOf(endereco + contador + varLocal));
             tabela.push(simbolo);
             contador++;
         }
@@ -77,11 +74,11 @@ public class TabelaDeSimbolos {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
             if (aux.peek().getLexema().equals(lexema) && Objects.requireNonNull(aux.peek()).getTipo().equals("procedimento"))
-                return true;
+                return false;
             else
                 aux.pop();
         }
-        return false;
+        return true;
     }
 
     public String pesquisaGlobalProcedimentoEndereco(String lexema) {
@@ -161,11 +158,9 @@ public class TabelaDeSimbolos {
         return "";
     }
 
-
     public Boolean tipoVariavel(Simbolo token) {
         return token.getTipo().equals("inteiro") || token.getTipo().equals("booleano") || token.getTipo().equals("variavel");
     }
-
 
     public boolean pesquisaGlobalVariavelInt(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
@@ -242,7 +237,6 @@ public class TabelaDeSimbolos {
             }
             tabela.pop();
         }
-        //tabela.pop();
         return contador;
     }
 

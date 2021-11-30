@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 created by Computer Engineering students (Cesar Marrote Manzano,
+ * Christopher de Oliveira Souza and Murilo de Paula Araujo) at PUC-Campinas.
+ *
+ * All rights reserved.
+ */
+
+/**
+ * Responsável por realizar um "objeto" com a posição, valor e símbolo.
+ */
 package Utils;
 
 public class Objeto {

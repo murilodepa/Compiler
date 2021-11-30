@@ -23,7 +23,7 @@
         LDV     8               
         LDC     10              
         CME                     
-        JMPF    6               
+        JPMF    6               
         CALL    4               
 6       NULL                    
         DALLOC  8       1       

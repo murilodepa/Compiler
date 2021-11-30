@@ -5,6 +5,9 @@
  * All rights reserved.
  */
 
+/**
+ * Responsável por conter as constantes com os operadores utilizado no analisador lexical.
+ */
 package Utils;
 
 public class Operadores {
