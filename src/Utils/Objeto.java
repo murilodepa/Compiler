@@ -5,10 +5,9 @@
  * All rights reserved.
  */
 
-/*
- * Responsável por realizar um "objeto" com a posição, valor e simbolo.
+/**
+ * Responsável por realizar um "objeto" com a posição, valor e símbolo.
  */
-
 package Utils;
 
 public class Objeto {

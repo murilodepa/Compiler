@@ -14,4 +14,5 @@ module Compiler {
     opens analiseLexical;
     opens Utils;
     opens analiseSintatica;
+    opens menuBar;
 }

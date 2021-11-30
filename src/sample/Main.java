@@ -5,13 +5,14 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Classe Main do projeto, responsável pela criação da interface e realizar a interação da interface com toda a lógica
- * de programação do compilador. E também realizar a abertura do arquivo e acesso do github que contém o projeto.
+ * de programação do compilador.
  */
-
 package sample;
 
+import menuBar.CompilarPrograma;
+import menuBar.LerArquivo;
 import analiseSintatica.Sintatico;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,21 +28,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class Main extends Application {
-
-    private final static String GITHUB_LINK = "https://github.com/murilodepa/Compiler";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -80,10 +71,6 @@ public class Main extends Application {
         labelMensagem.setStyle("-fx-font-weight: bold");
         labelMensagem.setFont(new Font("Roboto", 13));
 
-        final FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setTitle("Arquivo em branco");
         alerta.setContentText("Escolher um arquivo antes");
@@ -103,11 +90,11 @@ public class Main extends Application {
         menuSobre.getItems().add(github);
         menuSobre.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: roboto");
 
-        /* Definindo Menu Bar com menu arquivos e funções */
+        /** Definindo Menu Bar com menu arquivos e funções */
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(menuArquivo, menuFuncaos, menuSobre);
 
-        /* Definindo o posicionamento dos itens criados na tela principal */
+        /** Definindo o posicionamento dos itens criados na tela principal */
         final GridPane inputGridPane = new GridPane();
         GridPane.setConstraints(labelArquivo, 4, 2);
         GridPane.setConstraints(areaTextoCaminhoArquivo, 5, 2);
@@ -125,68 +112,25 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        /* Se o usuário selecionar a opção abrir*/
-        abrir.setOnAction(actionEvent -> abrirArquivo(fileChooser, primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
+        /** Se o usuário selecionar a opção abrir*/
+        LerArquivo lerArquivo = new LerArquivo();
+        abrir.setOnAction(actionEvent -> lerArquivo.abrirArquivo(primaryStage, areaTextoCaminhoArquivo, sintatico, areaTextoCodigo));
 
-        /* Se o usuário selecionar a opção compilar */
-        compilar.setOnAction(actionEvent -> compilarPrograma(sintatico, alerta, labelMensagem));
+        /** Se o usuário selecionar a opção compilar */
+        CompilarPrograma compilarPrograma = new CompilarPrograma();
+        compilar.setOnAction(actionEvent -> compilarPrograma.compilar(sintatico, alerta, labelMensagem));
+        compilarPrograma.compilarF9(vbox, sintatico, alerta, labelMensagem);
 
-        /* Se o usuário selecionar a tecla 'F9' */
-        vbox.setOnKeyPressed(ke -> {
-            if (ke.getCode().equals(KeyCode.F9)) {
-                compilarPrograma(sintatico, alerta, labelMensagem);
-            }
-        });
-
-        /* Se o usuário selecionar a opção GitHub */
-        github.setOnAction(actionEvent -> openGitHub());
+        /** Se o usuário selecionar a opção GitHub */
+        github.setOnAction(actionEvent -> compilarPrograma.openGitHub());
     }
 
-    public void compilarPrograma(Sintatico sintatico, Alert alerta, Label labelMensagem) {
-        try {
-            try {
-                if (sintatico.getLexical().getArquivo() == null) {
-                    alerta.show();
-                } else {
-                    sintatico.limpar();
-                    sintatico.executar();
-                    labelMensagem.setTextFill(Color.GREEN);
-                    labelMensagem.setText("Sucesso!");
-                }
-            } catch (Exception e) {
-                labelMensagem.setTextFill(Color.rgb(255, 0, 0));
-                labelMensagem.setText(e.getMessage());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void abrirArquivo(FileChooser fileChooser, Stage primaryStage, TextField areaTextoCaminhoArquivo, Sintatico sintatico, TextArea areaTextoCodigo) {
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        try {
-            if (selectedFile != null) {
-                Path caminhoDoArquivo;
-                caminhoDoArquivo = Paths.get(selectedFile.getPath());
-                char[] arquivo = Files.readString(caminhoDoArquivo).toCharArray();
-                areaTextoCaminhoArquivo.setText(caminhoDoArquivo.toString());
-                sintatico.getLexical().setArquivo(arquivo);
-                areaTextoCodigo.setText(String.copyValueOf(sintatico.getLexical().getArquivo()));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void openGitHub() {
-        try {
-            URI link = new URI(GITHUB_LINK);
-            Desktop.getDesktop().browse(link);
-        } catch (Exception error) {
-            System.out.println("Error to open the GitHub link: " + error);
-        }
-    }
-
+    /**
+     * Método principal que chama a construção da ‘interface’ gráfica e realiza a interação com toda a lógica de
+     * programação do compilador.
+     *
+     * @param args para o método main.
+     */
     public static void main(String[] args) {
         launch(args);
     }

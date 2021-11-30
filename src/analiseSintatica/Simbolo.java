@@ -5,10 +5,9 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Responsável por analisar o lexema, escopo, tipo e memória de uma variável.
  */
-
 package analiseSintatica;
 
 public class Simbolo {

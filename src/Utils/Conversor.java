@@ -5,10 +5,9 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Responsável por realizar a conversão de uma expressão no formato in-fixa para pós-fixa utilizando pilha.
  */
-
 package Utils;
 
 import analiseLexical.IDs;
@@ -24,6 +23,12 @@ import java.util.Objects;
 public class Conversor {
     List<Token> posFixa;
 
+    /**
+     * Método responsável por converter uma expressão de in-fixa para pós-fixa.
+     *
+     * @param expressao será uma lista de tokens, contendo lexemas e símbolos dos seus respectivos lexemas no formato in-fixa.
+     * @return uma lista de tokens no formato pós-fixa referente a expressão de entrada.
+     */
     public List<Token> converterPosFixa(List<Token> expressao) {
         int prioridade;
         posFixa = new ArrayList<>();
@@ -73,8 +78,13 @@ public class Conversor {
         return posFixa;
     }
 
+    /**
+     * Método responsável por analisar prioridade da expressão e retornar o "nível" dessa prioridade, sendo de 1 a 7 ou -99.
+     *
+     * @param token seria uma posição da lista ligada contendo o lexema e o seu respectivo símbolo.
+     * @return o nível de prioridade deste token de entrada, podendo ser 5, 6, 7, 4, 3, 2, 1 ou -99 sendo o menos prioritário.
+     */
     private int prioridade(Token token) {
-
         if (token.getSimbolo().equals(Operadores.MAIS) ||
                 token.getSimbolo().equals(Operadores.MENOS)) {
             return 5;
@@ -97,10 +107,8 @@ public class Conversor {
             return 2;
         } else if (token.getSimbolo().equals(IDs.Sou.toString())) {
             return 1;
-
         } else {
             return -99;
         }
     }
-
 }

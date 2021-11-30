@@ -5,10 +5,9 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Responsável por analisar as expressões, validação de variável inteiro, booleano e o tipo do retorno.
  */
-
 package Utils;
 
 import analiseLexical.IDs;

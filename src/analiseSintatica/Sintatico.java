@@ -5,11 +5,10 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Classe que contém o analisador sintático e semântico do compilador, e também, o processo de geração de código. Sendo
  * o segundo e terceiro ciclo de teste que o programa tenta encontrar algum erro sintático ou semântico.
  */
-
 package analiseSintatica;
 
 import Utils.AnalisadorExpressao;
@@ -37,6 +36,11 @@ public class Sintatico {
     private FileWriter arq;
     private PrintWriter gravarArq;
 
+    /**
+     * Construtor da classe sintático que instância as variáveis para a análise sintática.
+     *
+     * @throws Exception
+     */
     public Sintatico() throws Exception {
         lexical = new Lexical();
         tabelaDeSimbolos = new TabelaDeSimbolos();
@@ -49,6 +53,12 @@ public class Sintatico {
         varLocal = 0;
     }
 
+    /**
+     * Responsável por "resetar" todas as variáveis utilizadas caso o programa for compilado novamente sem ser fechado e
+     * executado novamente o programa do compilador.
+     *
+     * @throws IOException
+     */
     public void limpar() throws IOException {
         rotulo = 1;
         var = 0;
@@ -64,6 +74,11 @@ public class Sintatico {
         gravarArq = new PrintWriter(arq);
     }
 
+    /**
+     * Realiza a execução do analisador sintático, semântico e a geração do código.
+     *
+     * @throws Exception
+     */
     public void executar() throws Exception {
         lexical.analisadorLexical();
         tokens = lexical.getTokens();
@@ -74,6 +89,11 @@ public class Sintatico {
         analisadorSintatico();
     }
 
+    /**
+     * Realiza a análise sintática do compilador, onde começa o trecho de código do arquivo por um "START".
+     *
+     * @throws Exception
+     */
     public void analisadorSintatico() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.sprograma.toString())) {
             gera(completar8(""), completar8("START"), completar8(""), completar8(""));
@@ -109,6 +129,12 @@ public class Sintatico {
         arq.close();
     }
 
+    /**
+     * Método responsável por analisar um bloco, caminhando com o índice que percorre o arquivo e depois chamando os
+     * métodos "analisaEtVariaveis()", "analisaSubrotinas()" e "analisaComandos()" respectivamente.
+     *
+     * @throws Exception
+     */
     public void analisaBloco() throws Exception {
         i++;
         analisaEtVariaveis();

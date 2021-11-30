@@ -5,9 +5,20 @@
  * All rights reserved.
  */
 
-/*
+/**
  * Responsável pela tabela de símbolo do programa, que analisa os procedimentos, funções e variáveis locais e
  * globais, analisando duplicidade, escopo e identificadores, inserindo tipo e altera "uma marca" para identificar o escopo.
+ */
+
+/** Verificar escopo                          ** Verificar identificadores
+  * - programa - sprograma                     *  - var - svar
+  * - início - sinicio                         * - inteiro - sinteiro
+  * - procedimento - sprocedimento             * - booleano - Sbooleano
+  * - funcao - sfuncao                         * - identificador - Sidentificador
+  * - se - sse                                 * - número - Snumero
+  * - entao - sentao
+  * - senao - ssenao
+  * - enquanto - senquanto
  */
 
 package analiseSintatica;
@@ -21,25 +32,6 @@ public class TabelaDeSimbolos {
     public TabelaDeSimbolos() {
         tabela = new LinkedList<>();
     }
-
-    /* Verificar escopo
-     * programa - sprograma
-     * início - sinicio
-     * procedimento - sprocedimento
-     * funcao - sfuncao
-     * se - sse
-     * entao - sentao
-     * senao - ssenao
-     * enquanto - senquanto
-     */
-
-    /* Verificar identificadores
-     * var - svar
-     * inteiro - sinteiro
-     * booleano - Sbooleano
-     * identificador - Sidentificador
-     * número - Snumero
-     */
 
     public void insereTabela(String lexema, String escopo, String tipo, String memoria) {
         tabela.push(new Simbolo(lexema, escopo, tipo, memoria));
