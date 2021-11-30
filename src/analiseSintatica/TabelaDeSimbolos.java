@@ -50,14 +50,14 @@ public class TabelaDeSimbolos {
         return false;
     }
 
-    public int colocaTipo(String tipo, int endereco) {
+    public int colocaTipo(String tipo, int endereco, int varLocal) {
         int contador = 0;
         LinkedList<Simbolo> aux = new LinkedList<>();
         while (!tabela.isEmpty() && tabela.peek().getTipo().contains("variavel")) aux.push(tabela.pop());
         while (!aux.isEmpty()) {
             Simbolo simbolo = aux.pop();
             simbolo.setTipo(tipo);
-            simbolo.setMemoria(String.valueOf(endereco + contador));
+            simbolo.setMemoria(String.valueOf(endereco + contador+varLocal));
             tabela.push(simbolo);
             contador++;
         }

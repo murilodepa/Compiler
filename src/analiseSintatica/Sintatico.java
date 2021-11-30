@@ -172,7 +172,7 @@ public class Sintatico {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
         } else {
-            int contador = tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(), var);
+            int contador = tabelaDeSimbolos.colocaTipo(tokens.get(i).getLexema(), var,varLocal);
             varLocal += contador;
         }
         i++;
