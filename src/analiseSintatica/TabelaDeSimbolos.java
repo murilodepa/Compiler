@@ -17,6 +17,15 @@
  * - entao - sentao
  * - senao - ssenao
  * - enquanto - senquanto
+ * Verificar escopo                          ** Verificar identificadores
+ * - programa - sprograma                     *  - var - svar
+ * - início - sinicio                         * - inteiro - sinteiro
+ * - procedimento - sprocedimento             * - booleano - Sbooleano
+ * - funcao - sfuncao                         * - identificador - Sidentificador
+ * - se - sse                                 * - número - Snumero
+ * - entao - sentao
+ * - senao - ssenao
+ * - enquanto - senquanto
  */
 
 /** Verificar escopo                          ** Verificar identificadores
@@ -110,6 +119,12 @@ public class TabelaDeSimbolos {
         return true;
     }
 
+    /**
+     * Metodo responsável por retornar se um procedimento existe na tabela
+     *
+     * @param lexema lexema (procedimento) que será buscado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalProcedimento(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -121,6 +136,12 @@ public class TabelaDeSimbolos {
         return true;
     }
 
+    /**
+     * Metodo responsável por retornar o endereço de um procedimento
+     *
+     * @param lexema lexema (procedimento) que será utilizado para buscar o endereco
+     * @return o endereco do lexema
+     */
     public String pesquisaGlobalProcedimentoEndereco(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -132,6 +153,12 @@ public class TabelaDeSimbolos {
         return "";
     }
 
+    /**
+     * Metodo responsável por retornar se uma função existe na tabela e se é do tipo booleano ou inteiro
+     *
+     * @param lexema lexema (função) que será buscado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalFuncao(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -143,6 +170,12 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por retornar o endereço de uma função
+     *
+     * @param lexema lexema (função) que será utilizado para buscar o endereco
+     * @return o endereco do lexema
+     */
     public String pesquisaGlobalFuncaoEndereco(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -154,6 +187,12 @@ public class TabelaDeSimbolos {
         return "";
     }
 
+    /**
+     * Metodo responsável por retornar se uma função existe na tabela e se é do tipo booleano
+     *
+     * @param lexema lexema (função) que será buscado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalFuncaoBool(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -165,6 +204,12 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por retornar se uma função existe na tabela e se é do tipo inteiro
+     *
+     * @param lexema lexema (função) que será buscado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalFuncaoInt(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -176,6 +221,12 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por retornar se um lexema já existe na tabela
+     *
+     * @param lexema lexema que será buscado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalVariavel(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -187,6 +238,12 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por retornar o endereço de uma variável
+     *
+     * @param lexema lexema (variável) que será utilizado para buscar o endereco
+     * @return o endereco do lexema
+     */
     public String pesquisaGlobalVariavelEndereco(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -198,6 +255,11 @@ public class TabelaDeSimbolos {
         return "";
     }
 
+    /**
+     * Verifica se um token é igual a inteiro, booleano ou variavel
+     *
+     * @return verdadeiro ou falso, dependendo da verificação de tipo
+     */
     public Boolean tipoVariavel(Simbolo token) {
         return token.getTipo().equals("inteiro") || token.getTipo().equals("booleano") || token.getTipo().equals("variavel");
     }
@@ -232,6 +294,12 @@ public class TabelaDeSimbolos {
         return pesquisaGlobalVariavelBool(lexema) || pesquisaGlobalFuncaoBool(lexema);
     }
 
+    /**
+     * Metodo responsável por verificar o tipo de uma variável
+     *
+     * @param lexema variável a ser analisada
+     * @return o tipo da variável
+     */
     public String getTipo(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -269,6 +337,11 @@ public class TabelaDeSimbolos {
         return contador;
     }
 
+    /**
+     * Metodo responsável por desempilhar a tabela e verificar quantas variáveis estão declaradas
+     *
+     * @return o contrador (número) de variáveis declaradas
+     */
     public int desempilhaTudo() {
         int contador = 0;
         while (!tabela.isEmpty()) {
@@ -280,6 +353,11 @@ public class TabelaDeSimbolos {
         return contador;
     }
 
+    /**
+     * Metodo responsável por alterar o tipo do simbolo do topo da tabela
+     *
+     * @param tipo novo tipo que será inserido
+     */
     public void alteraTipoTopo(String tipo) {
         if (!tabela.isEmpty()) {
             Simbolo simbolo = tabela.pop();
