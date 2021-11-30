@@ -142,6 +142,11 @@ public class Sintatico {
         analisaComandos();
     }
 
+    /**
+     * Método responsável por analisar a declaração das variáveis
+     *
+     * @throws Exception
+     */
     public void analisaEtVariaveis() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.svar.toString())) {
             i++;
@@ -165,6 +170,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar a declaração de variáveis até encontrar o caracter dois pontos
+     *
+     * @throws Exception
+     */
     public void analisaVariaveis() throws Exception {
         do {
             if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
@@ -193,6 +203,11 @@ public class Sintatico {
         analisaTipo();
     }
 
+    /**
+     * Método responsável por analisar o tipo de uma variável (inteiro ou booleano)
+     *
+     * @throws Exception
+     */
     public void analisaTipo() throws Exception {
         if (!tokens.get(i).getSimbolo().equals(IDs.sinteiro.toString()) && !tokens.get(i).getSimbolo().equals(IDs.Sbooleano.toString())) {
             throw new Exception("ERRO! - Esperado um tipo inteiro ou booleano!");
@@ -323,6 +338,12 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por verificar o tipo de um comando e chamar a respectiva função
+     * Comandos possíveis: se, enquanto, leia, escreva e identificador (procedimento)
+     *
+     * @throws Exception
+     */
     public void analisaComandoSimples() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
             analisaAtribuicaoChamadaProcedimento();
@@ -375,6 +396,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar o comando "se"
+     *
+     * @throws Exception
+     */
     private void analisaSe() throws Exception {
         int auxRot1 = rotulo, auxRot2 = rotulo;
         i++;
@@ -413,6 +439,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar o comando "enquanto"
+     *
+     * @throws Exception
+     */
     private void analisaEnquanto() throws Exception {
         int auxRot1 = rotulo, auxRot2;
         gera(completar8(String.valueOf(rotulo)), completar8("NULL"), completar8(""), completar8(""));
@@ -447,6 +478,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar o comando "leia"
+     *
+     * @throws Exception
+     */
     private void analisaLeia() throws Exception {
         i++;
         if (tokens.get(i).getSimbolo().equals(Pontuacoes.sabre_parenteses.toString())) {
@@ -472,6 +508,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar o comando "escreva"
+     *
+     * @throws Exception
+     */
     private void analisaEscreva() throws Exception {
         i++;
         if (tokens.get(i).getSimbolo().equals(String.valueOf(Pontuacoes.sabre_parenteses))) {
@@ -576,14 +617,34 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por retornar a instância da classe de análise lexical
+     *
+     * @return a classe lexical
+     */
     public Lexical getLexical() {
         return lexical;
     }
 
+    /**
+     * Método responsável por gravar no arquivo o código gerado
+     *
+     * @param texto  primeiro texto a ser gravado (identificador de jump e call)
+     * @param texto2 segundo texto a ser gravado (instrução)
+     * @param texto3 terceiro texto a ser gravado (primeiro valor da instrução)
+     * @param texto4 quarto texto a ser gravado (segundo valor da instrução)
+     */
     public void gera(String texto, String texto2, String texto3, String texto4) {
         gravarArq.println(completar8(texto) + completar8(texto2) + completar8(texto3) + completar8(texto4));
     }
 
+    /**
+     * Método responsável por fazer com que uma string tenha um tamanho de total de 8, ajudando
+     * na geração de código
+     *
+     * @param string string a ser manipulada
+     * @return a string manipulada
+     */
     private String completar8(String string) {
         StringBuilder stringBuilder = new StringBuilder(string);
         while (stringBuilder.length() != 8) {
@@ -593,6 +654,11 @@ public class Sintatico {
         return string;
     }
 
+    /**
+     * Método responsável analisar uma expressão e gerar o código de acordo com o tipo do simbolo
+     *
+     * @param expressao expressao a ser analisada
+     */
     private void geraCodigoExpressao(List<Token> expressao) {
         expressao.forEach(token -> {
             if (token.getSimbolo().equals(IDs.Sidentificador.toString())) {

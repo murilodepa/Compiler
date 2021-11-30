@@ -8,17 +8,26 @@
 /**
  * Responsável pela tabela de símbolo do programa, que analisa os procedimentos, funções e variáveis locais e
  * globais, analisando duplicidade, escopo e identificadores, inserindo tipo e altera "uma marca" para identificar o escopo.
+ * Verificar escopo                          ** Verificar identificadores
+ * - programa - sprograma                     *  - var - svar
+ * - início - sinicio                         * - inteiro - sinteiro
+ * - procedimento - sprocedimento             * - booleano - Sbooleano
+ * - funcao - sfuncao                         * - identificador - Sidentificador
+ * - se - sse                                 * - número - Snumero
+ * - entao - sentao
+ * - senao - ssenao
+ * - enquanto - senquanto
  */
 
 /** Verificar escopo                          ** Verificar identificadores
-  * - programa - sprograma                     *  - var - svar
-  * - início - sinicio                         * - inteiro - sinteiro
-  * - procedimento - sprocedimento             * - booleano - Sbooleano
-  * - funcao - sfuncao                         * - identificador - Sidentificador
-  * - se - sse                                 * - número - Snumero
-  * - entao - sentao
-  * - senao - ssenao
-  * - enquanto - senquanto
+ * - programa - sprograma                     *  - var - svar
+ * - início - sinicio                         * - inteiro - sinteiro
+ * - procedimento - sprocedimento             * - booleano - Sbooleano
+ * - funcao - sfuncao                         * - identificador - Sidentificador
+ * - se - sse                                 * - número - Snumero
+ * - entao - sentao
+ * - senao - ssenao
+ * - enquanto - senquanto
  */
 
 package analiseSintatica;
@@ -33,20 +42,44 @@ public class TabelaDeSimbolos {
         tabela = new LinkedList<>();
     }
 
+    /**
+     * Responsável por inserir um novo simbolo na tabela
+     *
+     * @param lexema lexema do novo símbolo
+     * @param escopo escopo de declaração do novo símbolo
+     * @param tipo tipo do novo símbolo
+     * @param memoria valor de memória do novo símbolo
+     */
     public void insereTabela(String lexema, String escopo, String tipo, String memoria) {
         tabela.push(new Simbolo(lexema, escopo, tipo, memoria));
     }
 
-    public boolean pesquisarDuplicidade(String lexama) {
+    /**
+     * Responsável por perquisar a duplicidade na declaração de um lexema (variável) na tabela de símbolo
+     *
+     * @param lexema lexema a ser analisado
+     *
+     * @return true ou false, dependendo se o lexema foi ou não encontrado
+     */
+    public boolean pesquisarDuplicidade(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty() && aux.peek().getEscopo().equals("")) {
             Simbolo simbolo = aux.pop();
-            if (simbolo.getLexema().equals(lexama))
+            if (simbolo.getLexema().equals(lexema))
                 return true;
         }
         return false;
     }
 
+    /**
+     * Responsável por inserir o tipo de um simbolo na tabela
+     *
+     * @param tipo o tipo a ser inserido na tabela
+     * @param endereco endereco da variável
+     * @param varLocal endereço local da variável, ajuda a compor a memória do simbolo
+     *
+     * @return o contador
+     */
     public int colocaTipo(String tipo, int endereco, int varLocal) {
         int contador = 0;
         LinkedList<Simbolo> aux = new LinkedList<>();
@@ -61,6 +94,13 @@ public class TabelaDeSimbolos {
         return contador;
     }
 
+    /**
+     * Faz uma pesquisa em toda a tabela de símbolo, verificando se aquele lexema está contido na tabela
+     *
+     * @param lexema lexema a ser pesquisado
+     *
+     * @return true ou false, dependendo se o lexema foi ou não encontrado
+     */
     public boolean pesquisaGlobal(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {

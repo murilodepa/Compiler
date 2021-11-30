@@ -17,7 +17,7 @@ public class Token {
     /**
      * Construtor da classe Token que instanciará uma lista ligada com os seguintes campos:
      *
-     * @param lexema primeiro campo que conterá em todas as posições da lista ligada instanciada.
+     * @param lexema  primeiro campo que conterá em todas as posições da lista ligada instanciada.
      * @param simbolo segundo campo que conterá em todas as posições da lista ligada instanciada.
      */
     public Token(String lexema, String simbolo) {
