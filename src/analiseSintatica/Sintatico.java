@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Sintatico {
+
+    //region VARIAVEIS
     private LinkedList<Token> tokens;
     private int rotulo;
     private int var, varLocal, i = 0;
@@ -35,6 +37,7 @@ public class Sintatico {
     private final AnalisadorExpressao analisadorExpressao;
     private FileWriter arq;
     private PrintWriter gravarArq;
+    //endregion
 
     /**
      * Construtor da classe sintático que instância as variáveis para a análise sintática.
@@ -218,6 +221,13 @@ public class Sintatico {
         i++;
     }
 
+    /**
+     * Método responsável por analisar as subrotinas de um programa. As subrotinas podem ser procedimentos ou funções.
+     * Dependendo do tipo de subrotina, chama o procedimento de
+     * análise das mesmas -> analisaDeclaracaoProcedimento() e analisaDeclaracaoFuncao()
+     *
+     * @throws Exception
+     */
     public void analisaSubrotinas() throws Exception {
         Integer auxRot = null;
         int flag = 0;
@@ -244,6 +254,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar a declaração de um procedimento
+     *
+     * @throws Exception
+     */
     private void analisaDeclaracaoProcedimento() throws Exception {
         i++;
         String galho = "L";
@@ -273,6 +288,11 @@ public class Sintatico {
         // Desempilha ou volta nível
     }
 
+    /**
+     * Método responsável por analisar a declaração de uma função
+     *
+     * @throws Exception
+     */
     private void analisaDeclaracaoFuncao() throws Exception {
         i++;
         String galho = "L";
@@ -313,6 +333,11 @@ public class Sintatico {
         gera(completar8(""), completar8("RETURN"), completar8(""), completar8(""));
     }
 
+    /**
+     * Método responsável por analisar os comandos. Para cada comando, chama a procedimento de analisar um comando simples.
+     *
+     * @throws Exception
+     */
     public void analisaComandos() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.sinicio.toString())) {
             i++;
@@ -360,6 +385,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar atribuição ou chamada de procedimento
+     *
+     * @throws Exception
+     */
     private void analisaAtribuicaoChamadaProcedimento() throws Exception {
         i++;
         if (tokens.get(i).getSimbolo().equals(Operadores.ATRIBUICAO)) {
@@ -538,6 +568,12 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar uma expressão. Chama o método analisaExpressaoSimples(),
+     * para analisar com mais detalhes cada expressão.
+     *
+     * @throws Exception
+     */
     private void analisaExpressao() throws Exception {
         analisaExpressaoSimples();
         String simbolo = tokens.get(i).getSimbolo();
@@ -552,6 +588,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar uma expressão simples
+     *
+     * @throws Exception
+     */
     private void analisaExpressaoSimples() throws Exception {
         if (tokens.get(i).getSimbolo().equals(Operadores.MAIS) || tokens.get(i).getSimbolo().equals(Operadores.MENOS)) {
             if (tokens.get(i).getSimbolo().equals(Operadores.MAIS)) {
@@ -568,6 +609,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar um fator
+     *
+     * @throws Exception
+     */
     private void analisaFator() throws Exception {
         if (tokens.get(i).getSimbolo().equals(IDs.Sidentificador.toString())) {
             Simbolo simbolo = tabelaDeSimbolos.pesquisaLocal(tokens.get(i).getLexema());
@@ -609,6 +655,11 @@ public class Sintatico {
         }
     }
 
+    /**
+     * Método responsável por analisar um termo
+     *
+     * @throws Exception
+     */
     private void analisaTermo() throws Exception {
         analisaFator();
         while ((tokens.get(i).getSimbolo().equals(Operadores.MULTIPLICACAO)) || tokens.get(i).getSimbolo().equals(IDs.Sdiv.toString()) || tokens.get(i).getSimbolo().equals(IDs.Se.toString())) {

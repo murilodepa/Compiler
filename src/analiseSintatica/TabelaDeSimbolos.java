@@ -264,6 +264,12 @@ public class TabelaDeSimbolos {
         return token.getTipo().equals("inteiro") || token.getTipo().equals("booleano") || token.getTipo().equals("variavel");
     }
 
+    /**
+     * Metodo responsável por pesquisar na tabela se já existe uma variável inteira de mesmo nome
+     *
+     * @param lexema lexema a ser pesquisado/analisado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalVariavelInt(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -275,6 +281,12 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por pesquisar na tabela se já existe uma variável booleana de mesmo nome
+     *
+     * @param lexema lexema a ser pesquisado/analisado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalVariavelBool(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -286,10 +298,22 @@ public class TabelaDeSimbolos {
         return false;
     }
 
+    /**
+     * Metodo responsável por pesquisar na tabela se já existe uma variável ou função inteira de mesmo nome
+     *
+     * @param lexema lexema a ser pesquisado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalVariavelFuncInt(String lexema) {
         return pesquisaGlobalVariavelInt(lexema) || pesquisaGlobalFuncaoInt(lexema);
     }
 
+    /**
+     * Metodo responsável por pesquisar na tabela se já existe uma variável ou função booleana de mesmo nome
+     *
+     * @param lexema lexema a ser pesquisado
+     * @return verdadeiro ou falso, dependendo da análise
+     */
     public boolean pesquisaGlobalVariavelFuncBool(String lexema) {
         return pesquisaGlobalVariavelBool(lexema) || pesquisaGlobalFuncaoBool(lexema);
     }
@@ -315,6 +339,12 @@ public class TabelaDeSimbolos {
         return null;
     }
 
+    /**
+     * Metodo responsável por pesquisar na tabela, a partir do lexema, um símbolo
+     *
+     * @param lexema lexema a ser pesquisado
+     * @return o simbolo encontrado
+     */
     public Simbolo pesquisaLocal(String lexema) {
         LinkedList<Simbolo> aux = new LinkedList<>(tabela);
         while (!aux.isEmpty()) {
@@ -325,6 +355,11 @@ public class TabelaDeSimbolos {
         return null;
     }
 
+    /**
+     * Metodo responsável por desempilhar a pilha até achar a marcas "L" (de procedimento e função)
+     *
+     * @return o contador, de quantas funções ou procedimentos existem
+     */
     public int desempilhaMarca() {
         int contador = 0;
         while (!tabela.isEmpty() && !Objects.equals(tabela.peek().getEscopo(), "L")) {
@@ -338,9 +373,9 @@ public class TabelaDeSimbolos {
     }
 
     /**
-     * Metodo responsável por desempilhar a tabela e verificar quantas variáveis estão declaradas
+     * Metodo responsável por desempilhar a tabela e verificar quantos lexemas foram declarados
      *
-     * @return o contrador (número) de variáveis declaradas
+     * @return o contador (lexemas) declarados
      */
     public int desempilhaTudo() {
         int contador = 0;
